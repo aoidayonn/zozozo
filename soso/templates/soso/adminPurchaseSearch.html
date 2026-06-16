@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>購入履歴検索</title>
+</head>
+<body>
+    <div class="content">
+        <h3>購入履歴検索</h3>
+
+        <div class="form">
+            <form action="{% url 'soso:admin_purchase_search' %}" method="GET">
+                <table>
+                    {{ form.as_table }}
+                </table>
+                <button type="submit">検索</button>
+            </form>
+        </div>
+
+        <br>
+
+        {% if purchases is not None %}
+            {% if purchases %}
+            <table border="1">
+                <tr>
+                    <th>注文ID</th>
+                    <th>会員ID</th>
+                    <th>配送先</th>
+                    <th>注文日</th>
+                    <th>キャンセル</th>
+                    <th>詳細</th>
+                </tr>
+                {% for p in purchases %}
+                <tr>
+                    <td>{{ p.purchase_id }}</td>
+                    <td>{{ p.user.user_id }}</td>
+                    <td>{{ p.destination }}</td>
+                    <td>{{ p.booked_date }}</td>
+                    <td>{% if p.cancel %}キャンセル済{% else %}-{% endif %}</td>
+                    <td>
+                        <a href="/soso/adminPurchaseDetail/{{ p.purchase_id }}/">詳細</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <p>該当する注文が見つかりませんでした。</p>
+            {% endif %}
+        {% endif %}
+
+        <br>
+        <a href="{% url 'soso:admin_top' %}">管理者メニューに戻る</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>商品削除確認</title>
+</head>
+<body>
+    <div class="content">
+        <h3>以下の商品を削除しますか？</h3>
+
+        <table border="1">
+            <tr><th>商品ID</th><td>{{ item.item_id }}</td></tr>
+            <tr><th>商品名</th><td>{{ item.name }}</td></tr>
+            <tr><th>メーカー</th><td>{{ item.manufacturer }}</td></tr>
+            <tr><th>色</th><td>{{ item.color }}</td></tr>
+            <tr><th>価格</th><td>{{ item.price }}円</td></tr>
+            <tr><th>在庫数</th><td>{{ item.stock }}</td></tr>
+        </table>
+
+        <form action="/soso/adminItemDelete/{{ item.item_id }}/" method="POST">
+            {% csrf_token %}
+            <button type="submit">削除する</button>
+        </form>
+
+        <br>
+        <a href="{% url 'soso:admin_item_list' %}">商品一覧に戻る</a>
+    </div>
+</body>
+</html>

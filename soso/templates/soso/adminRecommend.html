@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>おすすめ指定</title>
+</head>
+<body>
+    <div class="content">
+        <h3>おすすめ商品の指定</h3>
+
+        <form action="{% url 'soso:admin_recommend' %}" method="POST">
+            {% csrf_token %}
+            <table border="1">
+                <tr>
+                    <th>おすすめ</th>
+                    <th>商品ID</th>
+                    <th>商品名</th>
+                    <th>メーカー</th>
+                    <th>価格</th>
+                </tr>
+                {% for item in items %}
+                <tr>
+                    <td>
+                        <input type="checkbox"
+                            name="recommended"
+                            value="{{ item.item_id }}"
+                            {% if item.recommended %}checked{% endif %}>
+                    </td>
+                    <td>{{ item.item_id }}</td>
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.manufacturer }}</td>
+                    <td>{{ item.price }}円</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <br>
+            <input type="submit" value="おすすめを更新" />
+        </form>
+
+        <br>
+        <a href="{% url 'soso:admin_top' %}">管理者メニューに戻る</a>
+    </div>
+</body>
+</html>

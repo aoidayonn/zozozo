@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>管理者メニュー</title>
+</head>
+<body>
+    <div class="content">
+        <h3>管理者メニュー</h3>
+        <p>ようこそ {{ admin_id }} さん</p>
+
+        <h4>商品管理</h4>
+        <a href="{% url 'soso:admin_item_list' %}">商品一覧</a><br>
+        <a href="{% url 'soso:admin_item_create' %}">商品登録</a><br>
+
+        <h4>おすすめ管理</h4>
+        <a href="{% url 'soso:admin_recommend' %}">おすすめ指定</a><br>
+
+        <h4>購入履歴管理</h4>
+        <a href="{% url 'soso:admin_purchase_search' %}">購入履歴検索</a><br>
+
+        <br>
+        <a href="{% url 'soso:admin_logout' %}">ログアウト</a><br>
+        <a href="{% url 'soso:top_page' %}">商品検索に戻る</a>
+    </div>
+</body>
+</html>

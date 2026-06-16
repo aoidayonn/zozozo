@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>商品修正</title>
+</head>
+<body>
+    <div class="content">
+        <h3>商品修正</h3>
+
+        <div class="form">
+            <form action="/soso/adminItemEdit/{{ item_id }}/" method="POST">
+                {% csrf_token %}
+                <table>
+                    {{ form.as_table }}
+                </table>
+                <input type="submit" value="更新" />
+            </form>
+        </div>
+
+        <br>
+        <a href="{% url 'soso:admin_item_list' %}">商品一覧に戻る</a>
+    </div>
+</body>
+</html>

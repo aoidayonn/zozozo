@@ -17,4 +17,23 @@ urlpatterns = [
     path("searchResult/", views.SearchResult.as_view(), name="search_result"),
     path("itemDetail/<int:item_id>/", views.ItemDetail.as_view(), name="item_detail"),
     path("cart/", views.ShoppingCart.as_view(), name="shopping_cart"),
+
+    # ★ 管理者用
+    path("adminLogin/", views.AdminLogin.as_view(), name="admin_login"),
+    path("adminMain/", views.AdminTopPage.as_view(), name="admin_top"),
+    path("adminLogout/", views.AdminLogout.as_view(), name="admin_logout"),
+
+    # 商品管理
+    path("adminItemList/", views.AdminItemList.as_view(), name="admin_item_list"),
+    path("adminItemCreate/", views.AdminItemCreate.as_view(), name="admin_item_create"),
+    path("adminItemEdit/<int:item_id>/", views.AdminItemEdit.as_view(), name="admin_item_edit"),
+    path("adminItemDelete/<int:item_id>/", views.AdminItemDelete.as_view(), name="admin_item_delete"),
+
+    # おすすめ管理
+    path("adminRecommend/", views.AdminRecommend.as_view(), name="admin_recommend"),
+
+    # 購入履歴・キャンセル
+    path("adminPurchaseSearch/", views.AdminPurchaseSearch.as_view(), name="admin_purchase_search"),
+    path("adminPurchaseDetail/<int:purchase_id>/", views.AdminPurchaseDetail.as_view(), name="admin_purchase_detail"),
+    path("adminPurchaseCancel/<int:purchase_id>/", views.AdminPurchaseCancel.as_view(), name="admin_purchase_cancel"),
 ]

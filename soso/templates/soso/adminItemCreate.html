@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>商品登録</title>
+</head>
+<body>
+    <div class="content">
+        <h3>商品登録</h3>
+
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
+
+        <div class="form">
+            <form action="{% url 'soso:admin_item_create' %}" method="POST">
+                {% csrf_token %}
+                <table>
+                    {{ form.as_table }}
+                </table>
+                <input type="submit" value="登録" />
+            </form>
+        </div>
+
+        <br>
+        <a href="{% url 'soso:admin_item_list' %}">商品一覧に戻る</a>
+    </div>
+</body>
+</html>
