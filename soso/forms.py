@@ -1,4 +1,12 @@
 from django import forms
+from soso.models import ShoppingCategory
+
+
+
+
+class CategoryChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return obj.name
 
 
 class UserLoginForm(forms.Form):
@@ -99,3 +107,85 @@ class SearchForm(forms.Form):
         max_length=128,
         required=False,
     )
+    
+    
+class AdminLoginForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    admin_id = forms.CharField(label="管理者ID:", max_length=128)
+    password = forms.CharField(
+        label="パスワード:",
+        max_length=256,
+        widget=forms.PasswordInput,
+    )
+    
+    
+class ItemForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    item_id = forms.IntegerField(
+        label="商品ID:",
+        min_value=1,
+        error_messages={"min_value": "商品IDは1以上で入力してください"},
+    )
+    name = forms.CharField(label="商品名:", max_length=128)
+    manufacturer = forms.CharField(label="メーカー:", max_length=32)
+    color = forms.CharField(label="色:", max_length=16)
+    price = forms.IntegerField(
+        label="価格:",
+        min_value=1,
+        error_messages={"min_value": "価格は1円以上で入力してください"},
+    )
+    stock = forms.IntegerField(
+        label="在庫数:",
+        min_value=0,
+        error_messages={"min_value": "在庫数は0以上で入力してください"},
+    )
+    recommended = forms.BooleanField(label="おすすめ:", required=False)
+
+    # ★ カスタムフィールドに変更
+    category = CategoryChoiceField(
+        label="カテゴリ:",
+        queryset=ShoppingCategory.objects.all(),
+    )
+
+
+class ItemEditForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    item_id = forms.IntegerField(label="商品ID:", disabled=True)
+    name = forms.CharField(label="商品名:", max_length=128)
+    manufacturer = forms.CharField(label="メーカー:", max_length=32)
+    color = forms.CharField(label="色:", max_length=16)
+    price = forms.IntegerField(
+        label="価格:",
+        min_value=1,
+        error_messages={"min_value": "価格は1円以上で入力してください"},
+    )
+    stock = forms.IntegerField(
+        label="在庫数:",
+        min_value=0,
+        error_messages={"min_value": "在庫数は0以上で入力してください"},
+    )
+    recommended = forms.BooleanField(label="おすすめ:", required=False)
+
+    # ★ カスタムフィールドに変更
+    category = CategoryChoiceField(
+        label="カテゴリ:",
+        queryset=ShoppingCategory.objects.all(),
+    )
+
+
+class PurchaseSearchForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    user_id = forms.CharField(label="会員ID:", max_length=128, required=False)
+    purchase_id = forms.IntegerField(label="注文ID:", required=False)
