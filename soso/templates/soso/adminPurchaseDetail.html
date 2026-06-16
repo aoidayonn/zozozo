@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>購入詳細</title>
+</head>
+<body>
+    <div class="content">
+        <h3>購入詳細</h3>
+
+        <table border="1">
+            <tr><th>注文ID</th><td>{{ purchase.purchase_id }}</td></tr>
+            <tr><th>会員ID</th><td>{{ purchase.user.user_id }}</td></tr>
+            <tr><th>配送先</th><td>{{ purchase.destination }}</td></tr>
+            <tr><th>注文日</th><td>{{ purchase.booked_date }}</td></tr>
+            <tr>
+                <th>状態</th>
+                <td>
+                    {% if purchase.cancel %}
+                        <span style="color:red;">キャンセル済</span>
+                    {% else %}
+                        有効
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <h4>注文商品</h4>
+        <table border="1">
+            <tr>
+                <th>商品名</th>
+                <th>メーカー</th>
+                <th>色</th>
+                <th>単価</th>
+                <th>数量</th>
+            </tr>
+            {% for d in details %}
+            <tr>
+                <td>{{ d.item.name }}</td>
+                <td>{{ d.item.manufacturer }}</td>
+                <td>{{ d.item.color }}</td>
+                <td>{{ d.item.price }}円</td>
+                <td>{{ d.amount }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% if not purchase.cancel %}
+        <br>
+        <form action="/soso/adminPurchaseCancel/{{ purchase.purchase_id }}/" method="POST">
+            {% csrf_token %}
+            <button type="submit" onclick="return confirm('この注文をキャンセルしますか？');">
+                この注文をキャンセルする
+            </button>
+        </form>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'soso:admin_purchase_search' %}">検索に戻る</a><br>
+        <a href="{% url 'soso:admin_top' %}">管理者メニューに戻る</a>
+    </div>
+</body>
+</html>

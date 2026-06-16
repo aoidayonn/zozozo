@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>商品一覧</title>
+</head>
+<body>
+    <div class="content">
+        <h3>商品一覧</h3>
+
+        <table border="1">
+            <tr>
+                <th>商品ID</th>
+                <th>商品名</th>
+                <th>メーカー</th>
+                <th>色</th>
+                <th>価格</th>
+                <th>在庫</th>
+                <th>おすすめ</th>
+                <th>カテゴリ</th>
+                <th>操作</th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.item_id }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.manufacturer }}</td>
+                <td>{{ item.color }}</td>
+                <td>{{ item.price }}円</td>
+                <td>{{ item.stock }}</td>
+                <td>{% if item.recommended %}★{% else %}-{% endif %}</td>
+                <td>{{ item.category.name }}</td>
+                <td>
+                    <a href="/soso/adminItemEdit/{{ item.item_id }}/">修正</a>
+                    <a href="/soso/adminItemDelete/{{ item.item_id }}/">削除</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <br>
+        <a href="{% url 'soso:admin_item_create' %}">商品を新規登録</a><br>
+        <a href="{% url 'soso:admin_top' %}">管理者メニューに戻る</a>
+    </div>
+</body>
+</html>
