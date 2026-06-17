@@ -1,0 +1,57 @@
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}購入履歴詳細{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <h3>購入履歴詳細</h3>
+
+        <table border="1">
+            <tr>
+                <th>注文ID</th>
+                <td>{{ purchase.purchase_id }}</td>
+            </tr>
+            <tr>
+                <th>注文日</th>
+                <td>{{ purchase.booked_date }}</td>
+            </tr>
+            <tr>
+                <th>配送先</th>
+                <td>{{ purchase.destination }}</td>
+            </tr>
+            <tr>
+                <th>キャンセル</th>
+                <td>
+                    {% if purchase.cancel %}
+                        <span style="color:red;">済</span>
+                    {% else %}
+                        未
+                    {% endif %}
+                </td>
+            </tr>
+        </table>
+
+        <h4>購入商品</h4>
+        <table border="1">
+            <tr>
+                <th>商品名</th>
+                <th>単価</th>
+                <th>数量</th>
+                <th>小計</th>
+            </tr>
+            {% for detail in details %}
+            <tr>
+                <td>{{ detail.item.name }}</td>
+                <td>{{ detail.item.price }}円</td>
+                <td>{{ detail.amount }}</td>
+                <td>{{ detail.subtotal }}円</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <p><strong>合計金額：{{ total }}円</strong></p>
+
+        <a href="{% url 'soso:user_purchase_history' %}">購入履歴一覧に戻る</a>
+    </div>
+    {% endblock %}

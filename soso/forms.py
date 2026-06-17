@@ -91,15 +91,16 @@ class SearchForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
 
-    CATEGORY_CHOICES = [
-        ("すべて", "すべて"),
-        ("帽子", "帽子"),
-        ("鞄", "鞄"),
-    ]
+        # ★ DBからカテゴリを動的に取得
+        category_choices = [("すべて", "すべて")]
+        category_choices += [
+            (str(c.category_id), c.name)
+            for c in ShoppingCategory.objects.all()
+        ]
+        self.fields["category"].choices = category_choices
 
     category = forms.ChoiceField(
         label="カテゴリ:",
-        choices=CATEGORY_CHOICES,
         required=False,
     )
     keyword = forms.CharField(
@@ -107,8 +108,24 @@ class SearchForm(forms.Form):
         max_length=128,
         required=False,
     )
+
+# ──────────────────────────────────────
+# 購入用フォーム
+# ──────────────────────────────────────
+class PurchaseForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    destination = forms.CharField(label="配送先住所", max_length=256, required=False)
+
+    payment_method = forms.ChoiceField(
+        label="精算方法",
+        choices=[("cod", "代金引換")],
+        initial="cod"
+    )
     
-    
+
 class AdminLoginForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -146,11 +163,14 @@ class ItemForm(forms.Form):
         error_messages={"min_value": "在庫数は0以上で入力してください"},
     )
     recommended = forms.BooleanField(label="おすすめ:", required=False)
-
-    # ★ カスタムフィールドに変更
     category = CategoryChoiceField(
         label="カテゴリ:",
         queryset=ShoppingCategory.objects.all(),
+    )
+    # ★ 画像フィールド追加
+    image = forms.ImageField(
+        label="商品画像:",
+        required=False,
     )
 
 
@@ -174,11 +194,14 @@ class ItemEditForm(forms.Form):
         error_messages={"min_value": "在庫数は0以上で入力してください"},
     )
     recommended = forms.BooleanField(label="おすすめ:", required=False)
-
-    # ★ カスタムフィールドに変更
     category = CategoryChoiceField(
         label="カテゴリ:",
         queryset=ShoppingCategory.objects.all(),
+    )
+    # ★ 画像フィールド追加
+    image = forms.ImageField(
+        label="商品画像:",
+        required=False,
     )
 
 
@@ -189,3 +212,19 @@ class PurchaseSearchForm(forms.Form):
 
     user_id = forms.CharField(label="会員ID:", max_length=128, required=False)
     purchase_id = forms.IntegerField(label="注文ID:", required=False)
+
+    
+class ReviewForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    rating = forms.ChoiceField(
+        label="評価:",
+        choices=[(i, f"★{i}") for i in range(1, 6)],
+    )
+    comment = forms.CharField(
+        label="コメント:",
+        max_length=500,
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )

@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SOSO{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+    <script src="{% static 'soso/js/main.js' %}"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- ===== 全ページ共通のメニューバー ===== -->
+    <nav class="global-nav">
+        <div class="nav-logo">
+            <a href="{% url 'soso:top_page' %}">SOSO CITY</a>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="{% url 'soso:top_page' %}">ホーム</a></li>
+            <li><a href="{% url 'soso:shopping_cart' %}">カート</a></li>
+            <li><a href="{% url 'soso:review_timeline' %}">レビュー</a></li>
+            {% if user_info %}
+                <li><a href="{% url 'soso:user_info' %}">マイページ</a></li>
+                <li><a href="{% url 'soso:user_logout' %}">ログアウト</a></li>
+            {% else %}
+                <li><a href="{% url 'soso:user_login' %}">ログイン</a></li>
+            {% endif %}
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <span></span><span></span><span></span>
+        </div>
+    </nav>
+
+    <!-- ===== 各ページ固有の中身 ===== -->
+    {% block content %}
+    {% endblock %}
+
+    <script src="{% static 'soso/js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

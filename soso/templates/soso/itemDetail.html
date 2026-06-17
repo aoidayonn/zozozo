@@ -1,12 +1,16 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>商品詳細</title>
-</head>
-<body>
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}商品詳細{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>商品詳細</h3>
+
+        <!-- ★ 商品画像を表示 -->
+        {% if item_info.image %}
+        <img src="{{ item_info.image.url }}" alt="{{ item_info.name }}" width="300">
+        {% endif %}
 
         <table border="1">
             <tr><th>商品名</th><td>{{ item_info.name }}</td></tr>
@@ -28,14 +32,48 @@
                 <option value="{{ n }}">{{ n }}</option>
                 {% endfor %}
             </select>
-            <br><button type="submit">ショッピングカートに入れる</button>
+            <button type="submit">ショッピングカートに入れる</button>
         </form>
         {% else %}
         <p style="color:red;">現在在庫切れです。</p>
         {% endif %}
+        
+
+<hr>
+<h3>レビュー</h3>
+
+{% if avg_rating %}
+    <p>平均評価：{{ avg_rating|floatformat:1 }} / 5.0</p>
+{% else %}
+    <p>まだレビューはありません</p>
+{% endif %}
+
+{% if user_info and not already_reviewed %}
+    <h4>レビューを投稿する</h4>
+    <form action="{% url 'soso:review_create' item_info.item_id %}" method="POST">
+        {% csrf_token %}
+        <p>{{ form.rating.label }} {{ form.rating }}</p>
+        <p>{{ form.comment.label }}<br>{{ form.comment }}</p>
+        <button type="submit">投稿</button>
+    </form>
+{% elif already_reviewed %}
+    <p>この商品は既にレビュー済みです</p>
+{% else %}
+    <p>レビューを投稿するにはログインしてください</p>
+{% endif %}
+
+<hr>
+
+{% for review in reviews %}
+    <div style="border: 1px solid #ccc; padding: 10px; margin: 5px 0;">
+        <p><strong>{{ review.user.name }}</strong>　★{{ review.rating }}</p>
+        <p>{{ review.comment }}</p>
+        <p><small>{{ review.created_at|date:"Y/m/d H:i" }}</small></p>
+    </div>
+{% endfor %}
+
 
         <br>
         <a href="{% url 'soso:top_page' %}">商品検索に戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

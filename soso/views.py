@@ -1,10 +1,35 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.generic import View
+from django.db import transaction
+
 
 from soso.models import AccountUser, ShoppingItem, ShoppingItemsincart
 from soso.forms import UserLoginForm, UserCreateForm, UserUpdateForm, SearchForm
+from django.db.models import Avg
+from soso.models import ShoppingReview
+from soso.forms import ReviewForm
+from soso.models import (
+    AccountUser,
+    ShoppingItem,
+    ShoppingItemsincart,
+    ShoppingPurchase,
+    ShoppingPurchasedetail,
+    ShoppingCategory,
+    AdministratorAdmin,
+)
 
+from soso.forms import (
+    UserLoginForm,
+    UserCreateForm,
+    UserUpdateForm,
+    SearchForm,
+    PurchaseForm,
+    AdminLoginForm,
+    ItemForm,
+    ItemEditForm,
+    PurchaseSearchForm,
+)
 
 # ──────────────────────────────────────
 # ログイン中のユーザーを取得
@@ -102,9 +127,14 @@ class TopPage(View):
     def get(self, request):
         user_info = get_login_user(request)
         form = SearchForm()
+
+        # ★ おすすめ商品を取得
+        recommended_items = ShoppingItem.objects.filter(recommended=True)
+
         context = {
             "user_info": user_info,
             "form": form,
+            "recommended_items": recommended_items,
         }
         return render(request, "soso/main.html", context)
 
@@ -121,12 +151,11 @@ class SearchResult(View):
             category = form.cleaned_data.get("category", "すべて")
             keyword = form.cleaned_data.get("keyword", "")
 
-            category_map = {"帽子": 1, "鞄": 2}
-            category_id = category_map.get(category)
-
             products = ShoppingItem.objects.all()
-            if category_id:
-                products = products.filter(category_id=category_id)
+
+            # ★ category_map 不要！IDで直接フィルタ
+            if category != "すべて":
+                products = products.filter(category_id=category)
             if keyword:
                 products = products.filter(name__icontains=keyword)
 
@@ -224,9 +253,26 @@ class ItemDetail(View):
     def get(self, request, item_id):
         item_info = ShoppingItem.objects.get(item_id=item_id)
         numbers = range(1, item_info.stock + 1)
+
+        
+        reviews = ShoppingReview.objects.filter(item=item_info).order_by("-created_at")
+        avg_rating = reviews.aggregate(Avg("rating"))["rating__avg"]
+        user = get_login_user(request)
+        already_reviewed = False
+        if user:
+            already_reviewed = ShoppingReview.objects.filter(item=item_info, user=user).exists()
+        form = ReviewForm()
+    
+
         return render(request, "soso/itemDetail.html", {
             "item_info": item_info,
-            "numbers": numbers,
+            "numbers": numbers,    
+            "reviews": reviews,
+            "avg_rating": avg_rating,
+            "form": form,
+            "already_reviewed": already_reviewed,
+            "user_info": user,
+        
         })
 
 
@@ -240,7 +286,11 @@ class ShoppingCart(View):
             return redirect("soso:user_login")
 
         cart_items = ShoppingItemsincart.objects.filter(user=user)
-        total = sum(ci.item.price * ci.amount for ci in cart_items)
+
+        total = 0
+        for ci in cart_items:
+            ci.amount_choices = range(1, ci.item.stock + 1)  # ★これ追加
+            total += ci.item.price * ci.amount
 
         context = {
             "cart_items": cart_items,
@@ -276,22 +326,239 @@ class ShoppingCart(View):
             )
 
         return redirect("soso:shopping_cart")
+
+# ──────────────────────────────────────
+# カート数量変更
+# ──────────────────────────────────────
+class ShoppingCartUpdate(View):
+    def post(self, request, cart_id):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        cart_item = ShoppingItemsincart.objects.get(id=cart_id, user=user)
+
+        amount = request.POST.get("amount")
+
+        try:
+            amount = int(amount)
+        except:
+            return redirect("soso:shopping_cart")
+
+        if amount <= 0:
+            return redirect("soso:shopping_cart")
+
+        if cart_item.item.stock < amount:
+            return redirect("soso:shopping_cart")
+
+        cart_item.amount = amount
+        cart_item.booked_date = timezone.now()
+        cart_item.save()
+
+        return redirect("soso:shopping_cart")
+
+# ──────────────────────────────────────
+# カート削除
+# ──────────────────────────────────────
+class ShoppingCartDelete(View):
+    def post(self, request, cart_id):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        cart_item = ShoppingItemsincart.objects.get(id=cart_id, user=user)
+        cart_item.delete()
+
+        return redirect("soso:shopping_cart")
     
-    
-from soso.models import AccountUser, ShoppingItem, ShoppingItemsincart, AdministratorAdmin
-from soso.forms import UserLoginForm, UserCreateForm, UserUpdateForm, SearchForm, AdminLoginForm
+# ──────────────────────────────────────
+# 購入画面
+# ──────────────────────────────────────
+class Purchase(View):
+    def get(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
 
+        cart_items = ShoppingItemsincart.objects.filter(user=user)
 
-from soso.models import (
-    AccountUser, ShoppingItem, ShoppingItemsincart,
-    ShoppingCategory, ShoppingPurchase, ShoppingPurchasedetail,
-    AdministratorAdmin,
-)
-from soso.forms import (
-    UserLoginForm, UserCreateForm, UserUpdateForm, SearchForm,
-    AdminLoginForm, ItemForm, ItemEditForm, PurchaseSearchForm,
-)
+        if not cart_items:
+            return redirect("soso:shopping_cart")
 
+        total = 0
+        for ci in cart_items:
+            ci.subtotal = ci.item.price * ci.amount   # ★追加
+            total += ci.subtotal
+
+        form = PurchaseForm(initial={
+            "destination": user.address,
+            "payment_method": "cod",
+        })
+
+        context = {
+            "cart_items": cart_items,
+            "total": total,
+            "form": form,
+            "user_info": user,
+        }
+
+        return render(request, "soso/purchase.html", context)
+
+# ──────────────────────────────────────
+# 購入確認画面
+# ──────────────────────────────────────
+class PurchaseConfirm(View):
+    def post(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        cart_items = ShoppingItemsincart.objects.filter(user=user)
+
+        if not cart_items:
+            return redirect("soso:shopping_cart")
+
+        destination = (request.POST.get("destination") or "").strip()
+        if not destination:
+            destination = user.address
+
+        payment_method = "代金引換"
+
+        total = 0
+        for ci in cart_items:
+            ci.subtotal = ci.item.price * ci.amount
+            total += ci.subtotal
+
+        context = {
+            "cart_items": cart_items,
+            "total": total,
+            "destination": destination,
+            "payment_method": payment_method,
+        }
+        return render(request, "soso/purchaseConfirm.html", context) 
+
+# ──────────────────────────────────────
+# 購入確定
+# ──────────────────────────────────────
+class PurchaseCommit(View):
+    def post(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        cart_items = ShoppingItemsincart.objects.filter(user=user).select_related("item")
+
+        if not cart_items.exists():
+            return redirect("soso:shopping_cart")
+
+        destination = request.POST.get("destination", "").strip()
+        if not destination:
+            destination = user.address
+
+        payment_method = "代金引換"
+
+        # ① 先に全商品の在庫確認
+        total = 0
+        for ci in cart_items:
+            if ci.item.stock < ci.amount:
+                # 再表示用にsubtotalを作る
+                for x in cart_items:
+                    x.subtotal = x.item.price * x.amount
+
+                context = {
+                    "cart_items": cart_items,
+                    "total": sum(x.item.price * x.amount for x in cart_items),
+                    "destination": destination,
+                    "payment_method": payment_method,
+                    "error": f"{ci.item.name} の在庫が不足しています。",
+                }
+                return render(request, "soso/purchaseConfirm.html", context)
+
+            total += ci.item.price * ci.amount
+
+        # ② 問題なければまとめて保存
+        with transaction.atomic():
+            last_purchase = ShoppingPurchase.objects.order_by("-purchase_id").first()
+            next_purchase_id = 1 if not last_purchase else last_purchase.purchase_id + 1
+
+            purchase = ShoppingPurchase.objects.create(
+                purchase_id=next_purchase_id,
+                destination=destination,
+                cancel=False,
+                user=user,
+            )
+
+            last_detail = ShoppingPurchasedetail.objects.order_by("-purchase_detail_id").first()
+            next_detail_id = 1 if not last_detail else last_detail.purchase_detail_id + 1
+
+            for ci in cart_items:
+                ShoppingPurchasedetail.objects.create(
+                    purchase_detail_id=next_detail_id,
+                    purchase=purchase,
+                    item=ci.item,
+                    amount=ci.amount,
+                )
+                next_detail_id += 1
+
+                ci.item.stock -= ci.amount
+                ci.item.save()
+
+            cart_items.delete()
+
+        context = {
+            "purchase": purchase,
+            "destination": destination,
+            "payment_method": payment_method,
+            "total": total,
+        }
+
+        return render(request, "soso/purchaseCommit.html", context)
+
+# ──────────────────────────────────────
+# 購入履歴一覧
+# ──────────────────────────────────────
+class UserPurchaseHistory(View):
+    def get(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        purchases = ShoppingPurchase.objects.filter(user=user).order_by("-booked_date")
+
+        context = {
+            "user_info": user,
+            "purchases": purchases,
+        }
+        return render(request, "soso/userPurchaseHistory.html", context)
+
+# ──────────────────────────────────────
+# 購入履歴詳細
+# ──────────────────────────────────────
+class UserPurchaseDetail(View):
+    def get(self, request, purchase_id):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        try:
+            purchase = ShoppingPurchase.objects.get(purchase_id=purchase_id, user=user)
+        except ShoppingPurchase.DoesNotExist:
+            return redirect("soso:user_purchase_history")
+
+        details = ShoppingPurchasedetail.objects.filter(purchase=purchase).select_related("item")
+
+        total = 0
+        for detail in details:
+            detail.subtotal = detail.item.price * detail.amount
+            total += detail.subtotal
+
+        context = {
+            "user_info": user,
+            "purchase": purchase,
+            "details": details,
+            "total": total,
+        }
+        return render(request, "soso/userPurchaseDetail.html", context)
 
 # ──────────────────────────────────────
 # ヘルパー：管理者ログインチェック
@@ -388,11 +655,11 @@ class AdminItemCreate(View):
         if not admin:
             return redirect("soso:admin_login")
 
-        form = ItemForm(request.POST)
+        # ★ request.FILES を追加（画像データを受け取る）
+        form = ItemForm(request.POST, request.FILES)
         if not form.is_valid():
             return render(request, "soso/adminItemCreate.html", {"form": form})
 
-        # 商品ID重複チェック
         if ShoppingItem.objects.filter(item_id=form.cleaned_data["item_id"]).exists():
             context = {
                 "form": form,
@@ -409,6 +676,7 @@ class AdminItemCreate(View):
             stock=form.cleaned_data["stock"],
             recommended=form.cleaned_data["recommended"],
             category=form.cleaned_data["category"],
+            image=form.cleaned_data.get("image"),  # ★ 画像を保存
         )
         return redirect("soso:admin_item_list")
 
@@ -433,16 +701,26 @@ class AdminItemEdit(View):
             "recommended": item.recommended,
             "category": item.category,
         })
-        return render(request, "soso/adminItemEdit.html", {"form": form, "item_id": item_id})
+        return render(request, "soso/adminItemEdit.html", {
+            "form": form,
+            "item_id": item_id,
+            "item": item,  # ★ 現在の画像表示用
+        })
 
     def post(self, request, item_id):
         admin = get_login_admin(request)
         if not admin:
             return redirect("soso:admin_login")
 
-        form = ItemEditForm(request.POST, initial={"item_id": item_id})
+        # ★ request.FILES を追加
+        form = ItemEditForm(request.POST, request.FILES, initial={"item_id": item_id})
         if not form.is_valid():
-            return render(request, "soso/adminItemEdit.html", {"form": form, "item_id": item_id})
+            item = ShoppingItem.objects.get(item_id=item_id)
+            return render(request, "soso/adminItemEdit.html", {
+                "form": form,
+                "item_id": item_id,
+                "item": item,
+            })
 
         item = ShoppingItem.objects.get(item_id=item_id)
         item.name = form.cleaned_data["name"]
@@ -452,8 +730,12 @@ class AdminItemEdit(View):
         item.stock = form.cleaned_data["stock"]
         item.recommended = form.cleaned_data["recommended"]
         item.category = form.cleaned_data["category"]
-        item.save()
 
+        # ★ 新しい画像がアップロードされた場合のみ更新
+        if form.cleaned_data.get("image"):
+            item.image = form.cleaned_data["image"]
+
+        item.save()
         return redirect("soso:admin_item_list")
 
 
@@ -573,3 +855,61 @@ class AdminPurchaseCancel(View):
         purchase.save()
 
         return redirect("soso:admin_purchase_detail", purchase_id=purchase_id)
+
+class ReviewCreate(View):
+    def post(self, request, item_id):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        item = ShoppingItem.objects.get(item_id=item_id)
+
+        if ShoppingReview.objects.filter(item=item, user=user).exists():
+            return redirect("soso:item_detail", item_id=item_id)
+
+        form = ReviewForm(request.POST)
+
+        if not form.is_valid():
+            reviews = ShoppingReview.objects.filter(item=item).order_by("-created_at")
+            avg_rating = reviews.aggregate(Avg("rating"))["rating__avg"]
+            numbers = range(1, item.stock + 1)
+            return render(request, "soso/itemDetail.html", {
+                "item_info": item,
+                "numbers": numbers,
+                "reviews": reviews,
+                "avg_rating": avg_rating,
+                "form": form,
+                "already_reviewed": False,
+                "user_info": user,
+            })
+
+        ShoppingReview.objects.create(
+            item=item,
+            user=user,
+            rating=form.cleaned_data["rating"],
+            comment=form.cleaned_data["comment"],
+        )
+        return redirect("soso:item_detail", item_id=item_id)
+    
+    
+from soso.models import (
+    AccountUser, ShoppingItem, ShoppingItemsincart,
+    ShoppingCategory, ShoppingPurchase, ShoppingPurchasedetail,
+    AdministratorAdmin, ShoppingReview,  # ★ 追加
+)
+
+
+# ──────────────────────────────────────
+# レビュータイムライン
+# ──────────────────────────────────────
+class ReviewTimeline(View):
+    def get(self, request):
+        # 新しい順に全レビューを取得（関連データも一緒に）
+        reviews = ShoppingReview.objects.select_related(
+            "item", "user"
+        ).order_by("-created_at")
+
+        context = {
+            "reviews": reviews,
+        }
+        return render(request, "soso/reviewTimeline.html", context)

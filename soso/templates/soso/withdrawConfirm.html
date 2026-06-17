@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>退会確認</title>
-</head>
-<body>
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}退会確認{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>{{ user_info.name }}さん、本当に退会しますか？</h3>
 
@@ -16,5 +15,4 @@
         <br>
         <a href="{% url 'soso:top_page' %}">商品検索</a>へ
     </div>
-</body>
-</html>
+    {% endblock %}

@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>おすすめ指定</title>
-</head>
-<body>
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}おすすめ商品の指定{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>おすすめ商品の指定</h3>
 
@@ -40,5 +39,4 @@
         <br>
         <a href="{% url 'soso:admin_top' %}">管理者メニューに戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

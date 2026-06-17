@@ -1,0 +1,771 @@
+/* ============================================
+   ZOZOTOWN風 統一CSS
+   ============================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+/* ============================================
+   リセット & ベース
+   ============================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 62.5%;           /* 1rem = 10px */
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #222;
+    background-color: #f5f5f5;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   メインコンテンツ (.content)
+   ============================================ */
+.content {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px 48px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================
+   見出し
+   ============================================ */
+h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
+}
+
+h3 {
+    font-size: 2.0rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #111;
+    letter-spacing: 0.04em;
+}
+
+h4 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #333;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 4px solid #111;
+}
+
+/* ============================================
+   フォーム (.form)
+   ============================================ */
+.form {
+    margin: 20px 0;
+}
+
+form {
+    margin: 0;
+}
+
+/* ── テキスト入力 / パスワード / セレクト ── */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
+    font-family: inherit;
+    font-size: 1.4rem;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fafafa;
+    color: #222;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    min-width: 220px;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #111;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+    background: #fff;
+}
+
+/* ── チェックボックス ── */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #111;
+    cursor: pointer;
+}
+
+/* ── 読み取り専用 ── */
+input[readonly] {
+    background: #eee;
+    color: #666;
+    cursor: default;
+}
+
+input[disabled] {
+    background: #eee;
+    color: #999;
+    cursor: not-allowed;
+}
+
+/* ============================================
+   ボタン
+   ============================================ */
+input[type="submit"],
+button[type="submit"] {
+    font-family: inherit;
+    font-size: 1.4rem;
+    font-weight: 700;
+    padding: 12px 36px;
+    margin-top: 16px;
+    color: #fff;
+    background-color: #111;
+    border: 2px solid #111;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+    background-color: #fff;
+    color: #111;
+}
+
+/* ── 削除・キャンセル系ボタン ── */
+button.btn-danger {
+    background-color: #c0392b;
+    border-color: #c0392b;
+}
+
+button.btn-danger:hover {
+    background-color: #fff;
+    color: #c0392b;
+}
+
+/* ============================================
+   テーブル
+   ============================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 1.4rem;
+}
+
+table[border="1"] {
+    border: none;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    font-weight: 700;
+    color: #111;
+    background-color: #f9f9f9;
+    white-space: nowrap;
+}
+
+/* テーブルのヘッダー行 */
+table tr:first-child th {
+    background-color: #111;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+/* テーブルのストライプ */
+table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* テーブル行ホバー */
+table tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* 情報表示用テーブル（2列：th + td） */
+table tr th:first-child {
+    width: 160px;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* ── フォーム内テーブル（as_table用） ── */
+.form table tr:first-child th {
+    background-color: transparent;
+    color: #333;
+}
+
+.form table th {
+    background-color: transparent;
+    color: #333;
+    font-weight: 500;
+    padding-right: 16px;
+    vertical-align: middle;
+}
+
+.form table td {
+    padding: 8px 0;
+}
+
+.form table tr:hover {
+    background-color: transparent;
+}
+
+/* ============================================
+   リンク
+   ============================================ */
+a {
+    color: #111;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, opacity 0.2s;
+}
+
+a:hover {
+    border-bottom-color: #111;
+    opacity: 0.7;
+}
+
+/* ── ナビゲーション風リンク ── */
+.content > a,
+.content > br + a {
+    display: inline-block;
+    margin: 4px 0;
+    padding: 4px 0;
+    font-size: 1.4rem;
+}
+
+/* ── 戻るリンク（ページ下部） ── */
+a[href*="main"],
+a[href*="top_page"],
+a[href*="admin_top"],
+a[href*="item_list"] {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 0;
+    color: #555;
+    font-size: 1.3rem;
+}
+
+a[href*="main"]::before,
+a[href*="top_page"]::before,
+a[href*="admin_top"]::before,
+a[href*="item_list"]::before {
+    content: "← ";
+}
+
+/* ============================================
+   エラーメッセージ
+   ============================================ */
+p[style*="color:red"],
+.error-message {
+    color: #c0392b !important;
+    font-size: 1.3rem;
+    font-weight: 500;
+    background: #fdf0ef;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+}
+
+ul[style*="color:red"],
+.error-list {
+    color: #c0392b !important;
+    font-size: 1.3rem;
+    font-weight: 500;
+    background: #fdf0ef;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 10px 16px 10px 32px;
+    margin-bottom: 16px;
+    list-style: disc inside;
+}
+
+ul[style*="color:red"] li,
+.error-list li {
+    margin: 4px 0;
+}
+
+/* Django form field errors */
+.errorlist {
+    color: #c0392b;
+    font-size: 1.2rem;
+    font-weight: 400;
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+}
+
+.errorlist li {
+    margin: 2px 0;
+}
+
+/* ============================================
+   ステータス表示
+   ============================================ */
+span[style*="color:red"] {
+    color: #c0392b !important;
+    font-weight: 700;
+}
+
+/* ── おすすめマーク ── */
+td:has(+ td) {
+    vertical-align: middle;
+}
+
+/* ============================================
+   合計金額
+   ============================================ */
+strong {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111;
+}
+
+/* ============================================
+   ウェルカムメッセージ
+   ============================================ */
+p:has(+ a),
+.content > p {
+    font-size: 1.4rem;
+    color: #444;
+    margin: 8px 0;
+}
+
+/* ============================================
+   検索フォーム（横並び）
+   ============================================ */
+form[style*="display:flex"] {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+form[style*="display:flex"] select,
+form[style*="display:flex"] input[type="text"] {
+    min-width: 160px;
+}
+
+form[style*="display:flex"] button {
+    margin-top: 0;
+    padding: 10px 24px;
+}
+
+/* ============================================
+   管理者メニュー
+   ============================================ */
+h4 + a {
+    display: inline-block;
+    margin: 4px 0;
+}
+
+/* ============================================
+   レスポンシブ
+   ============================================ */
+@media screen and (max-width: 768px) {
+    .content {
+        margin: 16px;
+        padding: 24px 20px;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    table {
+        font-size: 1.2rem;
+    }
+
+    th, td {
+        padding: 8px 10px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select {
+        min-width: 100%;
+    }
+
+    form[style*="display:flex"] {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    input[type="submit"],
+    button[type="submit"] {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .content {
+        margin: 8px;
+        padding: 16px 12px;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    /* テーブルの横スクロール */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* ============================================
+   おすすめ商品セクション
+   ============================================ */
+   .recommend-section {
+    margin: 24px 0;
+}
+
+.recommend-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111;
+    border-bottom: 3px solid #111;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.recommend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+.recommend-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.recommend-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.recommend-card a {
+    text-decoration: none;
+    color: inherit;
+    border-bottom: none;
+    display: block;
+}
+
+.recommend-card a:hover {
+    opacity: 1;
+    border-bottom: none;
+}
+
+.recommend-card-body {
+    padding: 20px 16px;
+}
+
+.recommend-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+}
+
+.recommend-info {
+    font-size: 1.2rem;
+    color: #888;
+    margin-bottom: 12px;
+}
+
+.recommend-price {
+    font-size: 2.0rem;
+    font-weight: 700;
+    color: #c0392b;
+    letter-spacing: 0.02em;
+}
+
+/* ── レスポンシブ ── */
+@media screen and (max-width: 768px) {
+    .recommend-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .recommend-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   商品画像
+   ============================================ */
+   .recommend-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.content img {
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+/* ============================================
+   スプラッシュ（ZOZO風シンプル版）
+   ============================================ */
+
+/* 全画面 */
+.splash {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    animation: splashFadeOut 0.6s ease 2.0s forwards;
+}
+
+/* タイトル */
+.splash-title {
+    font-size: 6.0rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #111;
+
+    opacity: 0;
+    transform: scale(0.9);
+    animation: splashTitleIn 0.6s ease 0.2s forwards;
+}
+
+/* サブタイトル */
+.splash-subtitle {
+    font-size: 1.4rem;
+    color: #777;
+    letter-spacing: 0.2em;
+    margin-top: 16px;
+
+    opacity: 0;
+    animation: splashSubIn 0.5s ease 0.8s forwards;
+}
+
+/* ライン */
+.splash-line {
+    width: 60px;
+    height: 2px;
+    background: #111;
+    margin-top: 16px;
+
+    opacity: 0;
+    transform: scaleX(0);
+    animation: splashLineIn 0.4s ease 1.2s forwards;
+}
+
+/* メイン */
+.main-content {
+    opacity: 0;
+    animation: mainFadeIn 0.5s ease 2.3s forwards;
+}
+
+/* アニメーション */
+@keyframes splashTitleIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes splashSubIn {
+    to { opacity: 1; }
+}
+
+@keyframes splashLineIn {
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes splashFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes mainFadeIn {
+    to { opacity: 1; }
+}
+
+
+
+/* ========== 共通メニューバー ========== */
+.global-nav {
+    display: flex;
+    align-items: center;
+    background-color: #1a1a2e;
+    padding: 0 30px;
+    padding-right: 80px;
+    height: 72px;                  /* ★ 高さも少しアップ */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.nav-logo {
+    margin-right: auto;
+}
+
+.nav-logo a {
+    color: #fff;
+    font-size: 2rem;               /* ★ 1.6 → 2rem */
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: 3px;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    flex: 1;
+    justify-content: space-evenly;
+}
+
+.nav-menu li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.75rem;            /* ★ 1.05 → 1.35rem */
+    font-weight: 900;              /* ★ 500 → 600 */
+    padding: 8px 12px;
+    transition: opacity 0.2s, border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+}
+
+.nav-menu li a:hover {
+    opacity: 0.85;
+    border-bottom: 2px solid #fff;
+}
+
+/* ========== ハンバーガーメニュー（モバイル） ========== */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    padding: 6px;
+}
+
+.hamburger span {
+    display: block;
+    width: 28px;
+    height: 3px;
+    background: #fff;
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* ========== スマホ対応 ========== */
+@media (max-width: 768px) {
+    .global-nav {
+        padding: 0 16px;
+        padding-right: 60px;
+        height: 60px;
+    }
+
+    .nav-logo a {
+        font-size: 1.5rem;
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background-color: #1a1a2e;
+        padding: 16px 0;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav-menu li {
+        text-align: center;
+        padding: 12px 0;
+    }
+
+    .nav-menu li a {
+        font-size: 1.25rem;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}
+
+/* メニューバーの矢印を消す */
+.nav-menu li a::before,
+.nav-menu li a::after,
+.nav-menu li::before,
+.nav-menu li::after,
+.nav-logo a::before,
+.nav-logo a::after {
+    content: none !important;
+    display: none !important;
+}

@@ -1,0 +1,194 @@
+/* ============================================
+   テーマ: ZOZOTOWN風 (モノクロ)
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:62.5%; scroll-behavior:smooth; }
+
+body {
+    font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #222;
+    background-color: #f5f5f5;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+}
+
+.content {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px 48px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+}
+
+h1 { font-size:2.8rem; font-weight:700; color:#111; margin-bottom:24px; letter-spacing:0.04em; }
+h3 { font-size:2.0rem; font-weight:700; color:#111; margin-bottom:24px; padding-bottom:12px; border-bottom:3px solid #111; letter-spacing:0.04em; }
+h4 { font-size:1.6rem; font-weight:500; color:#333; margin-top:28px; margin-bottom:12px; padding-left:12px; border-left:4px solid #111; }
+
+.form { margin:20px 0; }
+form { margin:0; }
+
+input[type="text"], input[type="password"], input[type="number"], select {
+    font-family:inherit; font-size:1.4rem; padding:10px 14px;
+    border:1px solid #ccc; border-radius:4px; background:#fafafa;
+    color:#222; transition:border-color 0.2s, box-shadow 0.2s; outline:none; min-width:220px;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, select:focus {
+    border-color:#111; box-shadow:0 0 0 3px rgba(0,0,0,0.08); background:#fff;
+}
+input[type="checkbox"] { width:18px; height:18px; accent-color:#111; cursor:pointer; }
+input[readonly] { background:#eee; color:#666; cursor:default; }
+input[disabled] { background:#eee; color:#999; cursor:not-allowed; }
+
+input[type="submit"], button[type="submit"] {
+    font-family:inherit; font-size:1.4rem; font-weight:700; padding:12px 36px;
+    margin-top:16px; color:#fff; background-color:#111; border:2px solid #111;
+    border-radius:4px; cursor:pointer; letter-spacing:0.08em; transition:background-color 0.2s, color 0.2s;
+}
+input[type="submit"]:hover, button[type="submit"]:hover { background-color:#fff; color:#111; }
+
+table { width:100%; border-collapse:collapse; margin:16px 0; font-size:1.4rem; }
+table[border="1"] { border:none; }
+th, td { padding:12px 16px; text-align:left; border-bottom:1px solid #e0e0e0; }
+th { font-weight:700; color:#111; background-color:#f9f9f9; white-space:nowrap; }
+table tr:first-child th { background-color:#111; color:#fff; font-weight:500; letter-spacing:0.04em; }
+table tr:nth-child(even) { background-color:#fafafa; }
+table tr:hover { background-color:#f0f0f0; }
+table tr th:first-child { width:160px; background-color:#f5f5f5; color:#333; }
+
+.form table tr:first-child th { background-color:transparent; color:#333; }
+.form table th { background-color:transparent; color:#333; font-weight:500; padding-right:16px; vertical-align:middle; }
+.form table td { padding:8px 0; }
+.form table tr:hover { background-color:transparent; }
+
+a { color:#111; text-decoration:none; font-weight:500; border-bottom:1px solid transparent; transition:border-color 0.2s, opacity 0.2s; }
+a:hover { border-bottom-color:#111; opacity:0.7; }
+
+p[style*="color:red"], .error-message {
+    color:#c0392b !important; font-size:1.3rem; font-weight:500;
+    background:#fdf0ef; border:1px solid #f5c6cb; border-radius:4px; padding:10px 16px; margin-bottom:16px;
+}
+.errorlist { color:#c0392b; font-size:1.2rem; font-weight:400; list-style:none; padding:0; margin:4px 0 0 0; }
+.errorlist li { margin:2px 0; }
+
+strong { font-size:1.8rem; font-weight:700; color:#111; }
+
+.recommend-section { margin:24px 0; }
+.recommend-title { font-size:2.2rem; font-weight:700; color:#111; border-bottom:3px solid #111; padding-bottom:12px; margin-bottom:20px; }
+.recommend-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px; }
+.recommend-card { background:#fff; border:1px solid #e0e0e0; border-radius:8px; overflow:hidden; transition:transform 0.2s, box-shadow 0.2s; }
+.recommend-card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,0,0,0.12); }
+.recommend-card a { text-decoration:none; color:inherit; border-bottom:none; display:block; }
+.recommend-card a:hover { opacity:1; border-bottom:none; }
+.recommend-card-body { padding:20px 16px; }
+.recommend-name { font-size:1.6rem; font-weight:700; color:#111; margin-bottom:8px; letter-spacing:0.02em; }
+.recommend-info { font-size:1.2rem; color:#888; margin-bottom:12px; }
+.recommend-price { font-size:2.0rem; font-weight:700; color:#c0392b; letter-spacing:0.02em; }
+.recommend-img { width:100%; height:200px; object-fit:cover; display:block; }
+.content img { border-radius:4px; margin-bottom:16px; }
+
+@media screen and (max-width:768px) {
+    .content { margin:16px; padding:24px 20px; }
+    h3 { font-size:1.8rem; }
+    table { font-size:1.2rem; }
+    th, td { padding:8px 10px; }
+    input[type="text"], input[type="password"], input[type="number"], select { min-width:100%; }
+    .recommend-grid { grid-template-columns:repeat(2, 1fr); gap:12px; }
+}
+@media screen and (max-width:480px) {
+    .content { margin:8px; padding:16px 12px; }
+    h3 { font-size:1.6rem; }
+    .recommend-grid { grid-template-columns:1fr; }
+}
+/* ============================================
+   スプラッシュ（ZOZO完成版）
+   ============================================ */
+
+   .splash {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    animation: splashFadeOut 0.6s ease 2.0s forwards;
+}
+
+/* タイトル */
+.splash-title {
+    font-size: 7.2rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #06b4ed;
+
+    opacity: 0;
+    transform: translateY(12px);
+    animation: splashTitleIn 0.6s ease 0.2s forwards;
+}
+
+/* サブタイトル */
+.splash-subtitle {
+    font-size: 1.3rem;
+    color: #888;
+    letter-spacing: 0.18em;
+    margin-top: 20px;
+
+    opacity: 0;
+    animation: splashSubIn 0.5s ease 0.8s forwards;
+}
+
+/* ライン（アクセント） */
+.splash-line {
+    width: 80px;
+    height: 2px;
+    background: #06b4ed;
+    margin-top: 20px;
+
+    opacity: 0;
+    transform: scaleX(0);
+    animation: splashLineIn 0.4s ease 1.2s forwards;
+}
+
+/* メイン表示 */
+.main-content {
+    opacity: 0;
+    animation: mainFadeIn 0.5s ease 2.2s forwards;
+}
+
+/* アニメーション */
+@keyframes splashTitleIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes splashSubIn {
+    to { opacity: 1; }
+}
+
+@keyframes splashLineIn {
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes splashFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes mainFadeIn {
+    to { opacity: 1; }
+}

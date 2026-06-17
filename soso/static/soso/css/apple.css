@@ -1,0 +1,202 @@
+/* ============================================
+   テーマ: Apple風 (クリーンホワイト + ブルーアクセント)
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:62.5%; scroll-behavior:smooth; }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #1d1d1f;
+    background: linear-gradient(180deg, #fbfbfd 0%, #f5f5f7 100%);
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+}
+
+.content {
+    max-width: 860px;
+    margin: 48px auto;
+    padding: 48px 56px;
+    background: rgba(255,255,255,0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 18px;
+    border: 1px solid rgba(0,0,0,0.04);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.04);
+}
+
+h1 { font-size:3.2rem; font-weight:700; color:#1d1d1f; margin-bottom:24px; letter-spacing:-0.02em; }
+h3 { font-size:2.2rem; font-weight:600; color:#1d1d1f; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid #d2d2d7; letter-spacing:-0.01em; }
+h4 { font-size:1.5rem; font-weight:600; color:#6e6e73; margin-top:28px; margin-bottom:12px; padding-left:0; border-left:none; text-transform:uppercase; letter-spacing:0.08em; }
+
+.form { margin:20px 0; }
+form { margin:0; }
+
+input[type="text"], input[type="password"], input[type="number"], select {
+    font-family:inherit; font-size:1.4rem; padding:12px 16px;
+    border:1px solid #d2d2d7; border-radius:12px; background:#fff;
+    color:#1d1d1f; transition:all 0.3s ease; outline:none; min-width:220px;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, select:focus {
+    border-color:#0071e3; box-shadow:0 0 0 4px rgba(0,113,227,0.15); background:#fff;
+}
+input[type="checkbox"] { width:18px; height:18px; accent-color:#0071e3; cursor:pointer; }
+input[readonly] { background:#f5f5f7; color:#86868b; cursor:default; }
+input[disabled] { background:#f5f5f7; color:#86868b; cursor:not-allowed; }
+
+input[type="submit"], button[type="submit"] {
+    font-family:inherit; font-size:1.4rem; font-weight:600; padding:12px 32px;
+    margin-top:16px; color:#fff; background:#0071e3; border:none;
+    border-radius:980px; cursor:pointer; letter-spacing:0.02em; transition:all 0.3s ease;
+}
+input[type="submit"]:hover, button[type="submit"]:hover { background:#0077ed; transform:scale(1.02); }
+
+table { width:100%; border-collapse:separate; border-spacing:0; margin:16px 0; font-size:1.4rem; border-radius:12px; overflow:hidden; border:1px solid #d2d2d7; }
+table[border="1"] { border:1px solid #d2d2d7; }
+th, td { padding:14px 18px; text-align:left; border-bottom:1px solid #f0f0f0; }
+th { font-weight:600; color:#1d1d1f; background:#f5f5f7; white-space:nowrap; font-size:1.2rem; text-transform:uppercase; letter-spacing:0.06em; }
+table tr:first-child th { background:#f5f5f7; color:#1d1d1f; }
+table tr:nth-child(even) { background:#fafafa; }
+table tr:hover { background:#f0f4ff; }
+table tr th:first-child { width:160px; }
+
+.form table { border:none; border-radius:0; }
+.form table tr:first-child th { background:transparent; text-transform:none; letter-spacing:normal; font-size:1.4rem; }
+.form table th { background:transparent; color:#6e6e73; font-weight:500; padding-right:16px; vertical-align:middle; text-transform:none; letter-spacing:normal; font-size:1.4rem; }
+.form table td { padding:8px 0; border-bottom:none; }
+.form table tr:hover { background:transparent; }
+
+a { color:#0071e3; text-decoration:none; font-weight:500; transition:color 0.2s; border-bottom:none; }
+a:hover { color:#0077ed; text-decoration:underline; opacity:1; }
+
+p[style*="color:red"], .error-message {
+    color:#ff3b30 !important; font-size:1.3rem; font-weight:500;
+    background:#fff2f1; border:1px solid #ffccc9; border-radius:12px; padding:12px 18px; margin-bottom:16px;
+}
+.errorlist { color:#ff3b30; font-size:1.2rem; font-weight:400; list-style:none; padding:0; margin:4px 0 0 0; }
+.errorlist li { margin:2px 0; }
+
+strong { font-size:1.8rem; font-weight:700; color:#1d1d1f; }
+
+.recommend-section { margin:32px 0; }
+.recommend-title { font-size:2.4rem; font-weight:700; color:#1d1d1f; border-bottom:none; padding-bottom:8px; margin-bottom:24px; letter-spacing:-0.02em; }
+.recommend-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:20px; }
+.recommend-card { background:#fff; border:1px solid #e8e8ed; border-radius:18px; overflow:hidden; transition:all 0.3s ease; }
+.recommend-card:hover { transform:translateY(-6px); box-shadow:0 12px 40px rgba(0,0,0,0.08); }
+.recommend-card a { text-decoration:none; color:inherit; display:block; }
+.recommend-card a:hover { text-decoration:none; }
+.recommend-card-body { padding:20px 18px; }
+.recommend-name { font-size:1.5rem; font-weight:600; color:#1d1d1f; margin-bottom:6px; }
+.recommend-info { font-size:1.2rem; color:#86868b; margin-bottom:12px; }
+.recommend-price { font-size:2.0rem; font-weight:700; color:#0071e3; }
+.recommend-img { width:100%; height:200px; object-fit:cover; display:block; }
+.content img { border-radius:12px; margin-bottom:16px; }
+
+@media screen and (max-width:768px) {
+    .content { margin:16px; padding:28px 24px; }
+    h3 { font-size:1.8rem; }
+    table { font-size:1.2rem; }
+    .recommend-grid { grid-template-columns:repeat(2, 1fr); gap:12px; }
+}
+@media screen and (max-width:480px) {
+    .content { margin:8px; padding:20px 16px; }
+    .recommend-grid { grid-template-columns:1fr; }
+}
+/* ============================================
+   スプラッシュ（Apple風）
+   ============================================ */
+
+/* 全画面オーバーレイ */
+.splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: #ffffff;
+
+    animation: splashFadeOut 0.8s ease 2.4s forwards;
+}
+
+/* タイトル */
+.splash-title {
+    font-size: 5.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1d1d1f;
+
+    opacity: 0;
+    transform: translateY(10px);
+    animation: splashTitleIn 0.7s ease 0.3s forwards;
+}
+
+/* サブタイトル */
+.splash-subtitle {
+    font-size: 1.4rem;
+    color: #6e6e73;
+    letter-spacing: 0.08em;
+    margin-top: 12px;
+
+    opacity: 0;
+    animation: splashSubIn 0.6s ease 0.9s forwards;
+}
+
+/* アンダーライン */
+.splash-line {
+    width: 60px;
+    height: 2px;
+    background: #0071e3;
+    border-radius: 2px;
+    margin-top: 20px;
+
+    opacity: 0;
+    transform: scaleX(0);
+    animation: splashLineIn 0.5s ease 1.3s forwards;
+}
+
+/* メイン */
+.main-content {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: mainFadeIn 0.6s ease 2.8s forwards;
+}
+
+/* アニメーション */
+@keyframes splashTitleIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes splashSubIn {
+    to { opacity: 1; }
+}
+
+@keyframes splashLineIn {
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes splashFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes mainFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

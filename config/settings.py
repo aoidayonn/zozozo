@@ -15,6 +15,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Static files
+STATIC_URL = 'static/'
+
+# ★ メディアファイル（画像アップロード用）を追加
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Quick-start development settings - unsuitable for production
@@ -78,7 +84,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": os.environ.get("DB_ENGINE", "django.db.backends.mysql"),
-        "NAME": os.environ.get("DB_NAME", "shop01"),
+        "NAME": os.environ.get("DB_NAME", "zozozo"),
         "USER": os.environ.get("DB_USER", "root"),
         "PASSWORD": os.environ.get("DB_PASSWORD", "P@ssw0rd"),
         "HOST": os.environ.get("DB_HOST", "127.0.0.1"),

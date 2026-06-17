@@ -1,0 +1,1009 @@
+/* ============================================
+   テーマ: STREET × INSTAGRAM — Light Edition
+   ============================================ */
+
+   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+   /* ============================================
+      Design Tokens
+      ============================================ */
+   :root {
+       /* ── Instagram Palette ── */
+       --ig-purple:  #833AB4;
+       --ig-pink:    #E1306C;
+       --ig-red:     #FD1D1D;
+       --ig-orange:  #F77737;
+       --ig-yellow:  #FCAF45;
+       --ig-blue:    #405DE6;
+   
+       /* ── Gradients ── */
+       --ig-gradient:      linear-gradient(135deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-red), var(--ig-orange));
+       --ig-gradient-h:    linear-gradient(90deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-red));
+       --ig-gradient-text: linear-gradient(135deg, var(--ig-blue), var(--ig-purple), var(--ig-pink), var(--ig-orange));
+       --ig-gradient-btn:  linear-gradient(90deg, var(--ig-purple), var(--ig-pink), var(--ig-orange));
+       --ig-gradient-soft: linear-gradient(135deg, rgba(64,93,230,0.06), rgba(131,58,180,0.06), rgba(225,48,108,0.06));
+   
+       /* ── Glows ── */
+       --glow-purple: rgba(131, 58, 180, 0.2);
+       --glow-pink:   rgba(225, 48, 108, 0.2);
+   
+       /* ── Surface Colors (Light) ── */
+       --bg-primary:    #ffffff;
+       --bg-page:       #f8f8fa;
+       --bg-card:       #ffffff;
+       --bg-elevated:   #f2f2f7;
+       --bg-input:      #f8f8fa;
+   
+       /* ── Text Colors (Light) ── */
+       --text-primary:    #1a1a1a;
+       --text-secondary:  #6e6e73;
+       --text-tertiary:   #aeaeb2;
+       --text-disabled:   #c7c7cc;
+   
+       /* ── Border & Divider ── */
+       --border-default:  #e5e5ea;
+       --border-hover:    #d1d1d6;
+       --divider:         rgba(0, 0, 0, 0.06);
+   
+       /* ── Radius ── */
+       --r-sm:   6px;
+       --r-md:   8px;
+       --r-lg:   12px;
+       --r-xl:   16px;
+       --r-pill: 980px;
+   
+       /* ── Transitions ── */
+       --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+       --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+   
+       /* ── Spacing ── */
+       --sp-xs: 4px;
+       --sp-sm: 8px;
+       --sp-md: 16px;
+       --sp-lg: 24px;
+       --sp-xl: 32px;
+       --sp-2xl: 48px;
+   }
+   
+   /* ============================================
+      リセット & ベース
+      ============================================ */
+   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+   html { font-size: 62.5%; scroll-behavior: smooth; }
+   
+   body {
+       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+       font-size: 1.5rem;
+       font-weight: 400;
+       color: var(--text-primary);
+       background-color: var(--bg-page);
+       line-height: 1.7;
+       -webkit-font-smoothing: antialiased;
+       -moz-osx-font-smoothing: grayscale;
+   }
+   
+   ::selection {
+       background: rgba(131, 58, 180, 0.15);
+       color: var(--text-primary);
+   }
+   
+   ::-webkit-scrollbar { width: 6px; }
+   ::-webkit-scrollbar-track { background: var(--bg-page); }
+   ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: var(--r-pill); }
+   ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+   
+   /* ============================================
+      メインコンテンツ
+      ============================================ */
+   .content {
+       max-width: 860px;
+       margin: var(--sp-2xl) auto;
+       padding: var(--sp-2xl);
+       background: var(--bg-card);
+       border-radius: var(--r-xl);
+       border: 1px solid var(--border-default);
+       position: relative;
+       overflow: hidden;
+       box-shadow: 0 2px 20px rgba(0, 0, 0, 0.04);
+   }
+   
+   .content::before {
+       content: "";
+       position: absolute;
+       top: 0; left: 0; right: 0;
+       height: 3px;
+       background: var(--ig-gradient-h);
+   }
+   
+   /* ============================================
+      スプラッシュアニメーション
+      ============================================ */
+   
+   /* ── 全画面オーバーレイ ── */
+   .splash {
+       position: fixed;
+       top: 0; left: 0; right: 0; bottom: 0;
+       z-index: 9999;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+       background: var(--bg-primary);
+       animation: splashFadeOut 0.6s ease-in 2.2s forwards;
+       pointer-events: none;
+   }
+   
+   /* ── ロゴ / タイトル ── */
+   .splash-title {
+       font-family: 'Space Grotesk', sans-serif;
+       font-size: 7.2rem;
+       font-weight: 700;
+       text-transform: uppercase;
+       letter-spacing: -0.03em;
+       line-height: 1;
+       background: var(--ig-gradient-text);
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+       background-clip: text;
+       opacity: 0;
+       transform: scale(0.8);
+       animation: splashTitleIn 0.8s var(--ease-spring) 0.2s forwards;
+   }
+   
+   .splash-subtitle {
+       font-family: 'Inter', sans-serif;
+       font-size: 1.6rem;
+       font-weight: 400;
+       color: var(--text-tertiary);
+       letter-spacing: 0.2em;
+       text-transform: uppercase;
+       margin-top: var(--sp-md);
+       opacity: 0;
+       animation: splashSubIn 0.6s var(--ease-out) 0.8s forwards;
+   }
+   
+   /* ── グラデーションライン ── */
+   .splash-line {
+       width: 80px;
+       height: 3px;
+       background: var(--ig-gradient-h);
+       border-radius: var(--r-pill);
+       margin-top: var(--sp-lg);
+       opacity: 0;
+       transform: scaleX(0);
+       animation: splashLineIn 0.5s var(--ease-out) 1.2s forwards;
+   }
+   
+   /* ── メインコンテンツのフェードイン ── */
+   .main-content {
+       opacity: 0;
+       transform: translateY(20px);
+       animation: mainContentIn 0.7s var(--ease-out) 2.6s forwards;
+   }
+   
+   /* ── キーフレーム ── */
+   @keyframes splashTitleIn {
+       to { opacity: 1; transform: scale(1); }
+   }
+   
+   @keyframes splashSubIn {
+       to { opacity: 1; }
+   }
+   
+   @keyframes splashLineIn {
+       to { opacity: 1; transform: scaleX(1); }
+   }
+   
+   @keyframes splashFadeOut {
+       to { opacity: 0; visibility: hidden; }
+   }
+   
+   @keyframes mainContentIn {
+       to { opacity: 1; transform: translateY(0); }
+   }
+   
+   /* ============================================
+      タイポグラフィ
+      ============================================ */
+   h1, h2, h3, h4 {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       color: var(--text-primary);
+       letter-spacing: -0.02em;
+   }
+   
+   h1 {
+       font-size: 3.6rem;
+       font-weight: 700;
+       margin-bottom: var(--sp-lg);
+       text-transform: uppercase;
+       line-height: 1.1;
+   }
+   
+   h2 {
+       font-size: 2.8rem;
+       font-weight: 700;
+       margin-bottom: var(--sp-lg);
+       text-transform: uppercase;
+       line-height: 1.15;
+   }
+   
+   h3 {
+       font-size: 2.2rem;
+       font-weight: 700;
+       margin-bottom: var(--sp-lg);
+       padding-bottom: var(--sp-md);
+       text-transform: uppercase;
+       line-height: 1.2;
+       border-bottom: 2px solid;
+       border-image: var(--ig-gradient-h) 1;
+   }
+   
+   h4 {
+       font-size: 1.5rem;
+       font-weight: 600;
+       margin-top: var(--sp-xl);
+       margin-bottom: var(--sp-md);
+       padding-left: var(--sp-md);
+       text-transform: uppercase;
+       letter-spacing: 0.08em;
+       line-height: 1.3;
+       border-left: 3px solid var(--ig-purple);
+       background: var(--ig-gradient-text);
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+       background-clip: text;
+   }
+   
+   .subtitle,
+   h2 + p,
+   h3 + p {
+       font-size: 1.5rem;
+       color: var(--text-secondary);
+       margin-bottom: var(--sp-lg);
+   }
+   
+   /* ============================================
+      ボタン（Instagram pill）
+      ============================================ */
+   input[type="submit"],
+   button[type="submit"],
+   .btn {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.4rem;
+       font-weight: 700;
+       padding: 12px 32px;
+       margin-top: var(--sp-md);
+       color: #fff;
+       background: var(--ig-gradient-btn);
+       background-size: 150% 100%;
+       background-position: 0% 50%;
+       border: none;
+       border-radius: var(--r-pill);
+       cursor: pointer;
+       letter-spacing: 0.06em;
+       text-transform: uppercase;
+       transition: background-position 0.4s var(--ease-out),
+                   box-shadow 0.3s var(--ease-out),
+                   transform 0.15s var(--ease-out);
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       gap: var(--sp-sm);
+       white-space: nowrap;
+       line-height: 1;
+   }
+   
+   input[type="submit"]:hover,
+   button[type="submit"]:hover,
+   .btn:hover {
+       background-position: 100% 50%;
+       box-shadow: 0 6px 24px var(--glow-purple),
+                   0 3px 12px var(--glow-pink);
+       transform: translateY(-2px);
+   }
+   
+   input[type="submit"]:active,
+   button[type="submit"]:active,
+   .btn:active {
+       transform: translateY(0) scale(0.98);
+       box-shadow: 0 2px 8px var(--glow-purple);
+   }
+   
+   .btn-lg {
+       padding: 16px 40px;
+       font-size: 1.6rem;
+       min-width: 200px;
+   }
+   
+   .btn-outline {
+       background: transparent;
+       border: 2px solid var(--ig-purple);
+       color: var(--ig-purple);
+       box-shadow: none;
+   }
+   
+   .btn-outline:hover {
+       background: var(--ig-gradient-btn);
+       background-size: 150% 100%;
+       border-color: transparent;
+       color: #fff;
+   }
+   
+   .btn-ghost {
+       background: var(--bg-elevated);
+       color: var(--text-primary);
+       box-shadow: none;
+   }
+   
+   .btn-ghost:hover {
+       background: var(--border-default);
+       box-shadow: none;
+       transform: translateY(-1px);
+   }
+   
+   button.btn-danger, .btn-danger {
+       background: var(--ig-red);
+       background-size: 100% 100%;
+   }
+   
+   button.btn-danger:hover, .btn-danger:hover {
+       box-shadow: 0 6px 24px rgba(253, 29, 29, 0.25);
+   }
+   
+   /* ============================================
+      フォーム
+      ============================================ */
+   .form { margin: var(--sp-lg) 0; }
+   form { margin: 0; }
+   
+   label {
+       display: block;
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.2rem;
+       font-weight: 600;
+       color: var(--text-secondary);
+       text-transform: uppercase;
+       letter-spacing: 0.06em;
+       margin-bottom: var(--sp-sm);
+   }
+   
+   input[type="text"],
+   input[type="password"],
+   input[type="number"],
+   input[type="email"],
+   select,
+   textarea {
+       font-family: 'Inter', sans-serif;
+       font-size: 1.5rem;
+       padding: 12px 16px;
+       border: 1.5px solid var(--border-default);
+       border-radius: var(--r-md);
+       background: var(--bg-input);
+       color: var(--text-primary);
+       transition: border-color 0.25s var(--ease-out),
+                   box-shadow 0.25s var(--ease-out),
+                   background-color 0.25s var(--ease-out);
+       outline: none;
+       min-width: 220px;
+       line-height: 1.5;
+   }
+   
+   input[type="text"]:focus,
+   input[type="password"]:focus,
+   input[type="number"]:focus,
+   input[type="email"]:focus,
+   select:focus,
+   textarea:focus {
+       border-color: var(--ig-purple);
+       box-shadow: 0 0 0 4px var(--glow-purple);
+       background: var(--bg-primary);
+   }
+   
+   input::placeholder, textarea::placeholder {
+       color: var(--text-disabled);
+   }
+   
+   textarea {
+       min-width: 100%;
+       min-height: 120px;
+       resize: vertical;
+   }
+   
+   select {
+       appearance: none;
+       -webkit-appearance: none;
+       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6' fill='%23aeaeb2'/%3E%3C/svg%3E");
+       background-repeat: no-repeat;
+       background-position: right 14px center;
+       padding-right: 36px;
+       cursor: pointer;
+   }
+   
+   select option { background: var(--bg-primary); color: var(--text-primary); }
+   
+   input[type="checkbox"] {
+       width: 18px; height: 18px;
+       accent-color: var(--ig-purple);
+       cursor: pointer;
+   }
+   
+   input[readonly] { background: var(--bg-elevated); color: var(--text-tertiary); cursor: default; }
+   input[disabled] { background: var(--bg-elevated); color: var(--text-disabled); cursor: not-allowed; opacity: 0.5; }
+   
+   .form-group { margin-bottom: var(--sp-lg); }
+   
+   .form-row {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       padding: var(--sp-md) 0;
+       border-bottom: 1px solid var(--divider);
+   }
+   .form-row:last-child { border-bottom: none; }
+   .form-row label {
+       margin-bottom: 0;
+       min-width: 140px;
+       font-size: 1.5rem;
+       font-weight: 400;
+       text-transform: none;
+       letter-spacing: 0;
+       color: var(--text-secondary);
+   }
+   
+   /* ── フォーム内テーブル ── */
+   .form table { border: none; margin: 0; }
+   .form table tr:first-child th {
+       background: transparent;
+       color: var(--text-secondary);
+       text-transform: none;
+       letter-spacing: normal;
+       font-size: 1.5rem;
+       font-weight: 400;
+       border-bottom: 1px solid var(--divider);
+   }
+   .form table th {
+       background: transparent;
+       color: var(--text-secondary);
+       font-weight: 400;
+       padding-right: var(--sp-md);
+       vertical-align: middle;
+       text-transform: none;
+       letter-spacing: normal;
+       font-size: 1.5rem;
+   }
+   .form table td { padding: 10px 0; border-bottom: none; }
+   .form table tr:hover { background: transparent; }
+   
+   /* ============================================
+      テーブル
+      ============================================ */
+   table {
+       width: 100%;
+       border-collapse: collapse;
+       margin: var(--sp-md) 0;
+       font-size: 1.4rem;
+   }
+   
+   table[border="1"] { border: none; }
+   
+   th, td {
+       padding: 14px 16px;
+       text-align: left;
+       border-bottom: 1px solid var(--divider);
+       vertical-align: middle;
+   }
+   
+   th {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-weight: 600;
+       white-space: nowrap;
+       text-transform: uppercase;
+       letter-spacing: 0.06em;
+       font-size: 1.1rem;
+   }
+   
+   table tr:first-child th {
+       background: var(--ig-gradient);
+       color: #fff;
+       font-weight: 600;
+       padding: 12px 16px;
+   }
+   
+   table tr:nth-child(even) { background: var(--bg-input); }
+   table tr:hover { background: var(--ig-gradient-soft); }
+   table tr:last-child td { border-bottom: none; }
+   
+   table td:last-child { text-align: right; }
+   table th:last-child { text-align: right; }
+   
+   /* ── 情報テーブル ── */
+   .info-table th,
+   table tr th:first-child {
+       width: 160px;
+       background: var(--bg-elevated);
+       color: var(--ig-purple);
+       font-size: 1.3rem;
+       text-transform: none;
+       letter-spacing: 0;
+   }
+   
+   .info-table td { text-align: left; }
+   .info-table td:last-child { text-align: left; }
+   
+   /* ============================================
+      リンク
+      ============================================ */
+   a {
+       color: var(--ig-purple);
+       text-decoration: none;
+       font-weight: 600;
+       transition: color 0.2s var(--ease-out);
+   }
+   
+   a:hover { color: var(--ig-pink); }
+   
+   /* ── 戻るリンク ── */
+   a[href*="main"],
+   a[href*="top_page"],
+   a[href*="admin_top"],
+   a[href*="item_list"],
+   a[href*="shopping_cart"],
+   a[href*="user_info"],
+   a[href*="user_purchase"] {
+       display: inline-flex;
+       align-items: center;
+       gap: var(--sp-xs);
+       margin-top: var(--sp-xl);
+       padding: var(--sp-sm) 0;
+       color: var(--text-tertiary);
+       font-size: 1.3rem;
+       font-weight: 500;
+   }
+   
+   a[href*="main"]::before,
+   a[href*="top_page"]::before,
+   a[href*="admin_top"]::before,
+   a[href*="item_list"]::before,
+   a[href*="shopping_cart"]::before,
+   a[href*="user_info"]::before,
+   a[href*="user_purchase"]::before {
+       content: "←";
+       font-size: 1.4rem;
+       transition: transform 0.2s var(--ease-out);
+   }
+   
+   a[href*="main"]:hover,
+   a[href*="top_page"]:hover,
+   a[href*="admin_top"]:hover,
+   a[href*="item_list"]:hover,
+   a[href*="shopping_cart"]:hover,
+   a[href*="user_info"]:hover,
+   a[href*="user_purchase"]:hover {
+       color: var(--ig-pink);
+   }
+   
+   a[href*="main"]:hover::before,
+   a[href*="top_page"]:hover::before,
+   a[href*="admin_top"]:hover::before,
+   a[href*="item_list"]:hover::before,
+   a[href*="shopping_cart"]:hover::before,
+   a[href*="user_info"]:hover::before,
+   a[href*="user_purchase"]:hover::before {
+       transform: translateX(-3px);
+   }
+   
+   /* ============================================
+      ナビリンクリスト（.section）
+      ============================================ */
+   .section { margin-bottom: var(--sp-sm); }
+   
+   .section a {
+       display: flex;
+       align-items: center;
+       justify-content: space-between;
+       padding: 14px 12px;
+       margin: 0 -12px;
+       border-bottom: none;
+       border-radius: var(--r-md);
+       font-size: 1.5rem;
+       font-weight: 500;
+       color: var(--text-primary);
+       text-decoration: none;
+       transition: all 0.2s var(--ease-out);
+   }
+   
+   .section a:hover {
+       background: var(--ig-gradient-soft);
+       color: var(--ig-purple);
+   }
+   
+   .section a::after {
+       content: "›";
+       font-size: 2.0rem;
+       font-weight: 300;
+       color: var(--text-disabled);
+       line-height: 1;
+       transition: all 0.2s var(--ease-out);
+   }
+   
+   .section a:hover::after {
+       color: var(--ig-pink);
+       transform: translateX(2px);
+   }
+   
+   .section a[href*="main"]::before,
+   .section a[href*="top_page"]::before,
+   .section a[href*="admin_top"]::before,
+   .section a[href*="shopping_cart"]::before,
+   .section a[href*="user_info"]::before,
+   .section a[href*="user_purchase"]::before {
+       content: none;
+   }
+   
+   .section a[href*="main"],
+   .section a[href*="top_page"],
+   .section a[href*="admin_top"],
+   .section a[href*="shopping_cart"],
+   .section a[href*="user_info"],
+   .section a[href*="user_purchase"] {
+       margin-top: 0;
+   }
+   
+   /* ============================================
+      エラーメッセージ
+      ============================================ */
+   p[style*="color:red"],
+   .error-message {
+       color: var(--ig-red) !important;
+       font-size: 1.4rem;
+       font-weight: 500;
+       background: rgba(253, 29, 29, 0.05);
+       border: 1px solid rgba(253, 29, 29, 0.12);
+       border-radius: var(--r-md);
+       padding: 12px var(--sp-md);
+       margin-bottom: var(--sp-md);
+   }
+   
+   ul[style*="color:red"],
+   .error-list {
+       color: var(--ig-red) !important;
+       font-size: 1.4rem;
+       background: rgba(253, 29, 29, 0.05);
+       border: 1px solid rgba(253, 29, 29, 0.12);
+       border-radius: var(--r-md);
+       padding: 12px var(--sp-md) 12px var(--sp-xl);
+       margin-bottom: var(--sp-md);
+       list-style: disc inside;
+   }
+   
+   .errorlist {
+       color: var(--ig-red);
+       font-size: 1.2rem;
+       list-style: none;
+       padding: 0;
+       margin: var(--sp-xs) 0 0 0;
+   }
+   .errorlist li { margin: 2px 0; }
+   
+   /* ============================================
+      バッジ
+      ============================================ */
+   .badge {
+       display: inline-flex;
+       align-items: center;
+       padding: 3px 12px;
+       border-radius: var(--r-pill);
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.1rem;
+       font-weight: 600;
+       text-transform: uppercase;
+       letter-spacing: 0.04em;
+   }
+   
+   .badge-success { background: rgba(52, 199, 89, 0.1); color: #28a745; }
+   .badge-danger  { background: rgba(253, 29, 29, 0.08); color: var(--ig-red); }
+   .badge-info    { background: rgba(64, 93, 230, 0.08); color: var(--ig-blue); }
+   
+   /* ============================================
+      合計 & ステータス
+      ============================================ */
+   span[style*="color:red"] { color: var(--ig-red) !important; font-weight: 700; }
+   
+   strong {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.8rem;
+       font-weight: 700;
+       color: var(--text-primary);
+   }
+   
+   .total-row {
+       display: flex;
+       justify-content: space-between;
+       align-items: baseline;
+       padding: var(--sp-lg) 0;
+       border-top: 1px solid var(--divider);
+       margin-top: var(--sp-sm);
+   }
+   
+   .total-row .label {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.7rem;
+       font-weight: 600;
+       color: var(--text-primary);
+       text-transform: uppercase;
+   }
+   
+   .total-row .amount {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 2.8rem;
+       font-weight: 700;
+       letter-spacing: -0.02em;
+       background: var(--ig-gradient-text);
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+       background-clip: text;
+   }
+   
+   /* ============================================
+      カード / 完了アイコン / ステップ
+      ============================================ */
+   .card {
+       background: var(--bg-elevated);
+       border: 1px solid var(--border-default);
+       border-radius: var(--r-lg);
+       padding: var(--sp-lg);
+   }
+   
+   .success-icon {
+       width: 72px; height: 72px;
+       border-radius: 50%;
+       background: var(--ig-gradient-btn);
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin: 0 auto var(--sp-lg);
+       box-shadow: 0 8px 32px var(--glow-purple);
+   }
+   .success-icon::after { content: "✓"; color: #fff; font-size: 3.2rem; font-weight: 300; }
+   
+   .steps {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       margin-bottom: var(--sp-2xl);
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.1rem;
+       font-weight: 500;
+       color: var(--text-disabled);
+       text-transform: uppercase;
+       letter-spacing: 0.04em;
+   }
+   
+   .steps .step { display: flex; align-items: center; gap: var(--sp-sm); }
+   .steps .step.active { color: var(--text-primary); }
+   .steps .step.done { color: var(--ig-purple); }
+   
+   .steps .step-number {
+       width: 28px; height: 28px;
+       border-radius: 50%;
+       background: var(--border-default);
+       color: var(--text-tertiary);
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       font-size: 1.2rem;
+       font-weight: 700;
+   }
+   
+   .steps .step.active .step-number {
+       background: var(--ig-gradient-btn);
+       color: #fff;
+       box-shadow: 0 0 12px var(--glow-purple);
+   }
+   
+   .steps .step.done .step-number {
+       background: var(--ig-purple);
+       color: #fff;
+   }
+   
+   .steps .step-divider {
+       width: 32px; height: 2px;
+       background: var(--border-default);
+       margin: 0 var(--sp-sm);
+       border-radius: var(--r-pill);
+   }
+   
+   /* ============================================
+      おすすめ商品
+      ============================================ */
+   .recommend-section { margin: var(--sp-xl) 0; }
+   
+   .recommend-title {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 2.0rem;
+       font-weight: 700;
+       color: var(--text-primary);
+       border-bottom: 2px solid;
+       border-image: var(--ig-gradient-h) 1;
+       padding-bottom: var(--sp-md);
+       margin-bottom: var(--sp-lg);
+       text-transform: uppercase;
+   }
+   
+   .recommend-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+       gap: var(--sp-md);
+   }
+   
+   .recommend-card {
+       background: var(--bg-card);
+       border: 1px solid var(--border-default);
+       border-radius: var(--r-lg);
+       overflow: hidden;
+       transition: transform 0.35s var(--ease-spring),
+                   box-shadow 0.35s var(--ease-out),
+                   border-color 0.35s var(--ease-out);
+       position: relative;
+   }
+   
+   .recommend-card:hover {
+       transform: translateY(-6px);
+       border-color: var(--ig-purple);
+       box-shadow: 0 12px 40px var(--glow-purple),
+                   0 6px 20px var(--glow-pink);
+   }
+   
+   .recommend-card::before {
+       content: "";
+       position: absolute;
+       top: 0; left: 0; right: 0;
+       height: 3px;
+       background: var(--ig-gradient-h);
+       opacity: 0;
+       transition: opacity 0.3s var(--ease-out);
+       z-index: 1;
+   }
+   
+   .recommend-card:hover::before { opacity: 1; }
+   
+   .recommend-card a { text-decoration: none; color: inherit; display: block; }
+   .recommend-card a:hover { opacity: 1; }
+   
+   .recommend-card-body { padding: var(--sp-md); }
+   
+   .recommend-name {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.5rem;
+       font-weight: 700;
+       color: var(--text-primary);
+       margin-bottom: var(--sp-xs);
+       text-transform: uppercase;
+       line-height: 1.3;
+   }
+   
+   .recommend-info {
+       font-size: 1.2rem;
+       color: var(--text-tertiary);
+       margin-bottom: var(--sp-sm);
+   }
+   
+   .recommend-price {
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.8rem;
+       font-weight: 700;
+       background: var(--ig-gradient-text);
+       -webkit-background-clip: text;
+       -webkit-text-fill-color: transparent;
+       background-clip: text;
+   }
+   
+   .recommend-img {
+       width: 100%;
+       height: 200px;
+       object-fit: cover;
+       display: block;
+       transition: transform 0.4s var(--ease-out);
+   }
+   
+   .recommend-card:hover .recommend-img { transform: scale(1.05); }
+   
+   .recommend-img-placeholder {
+       width: 100%;
+       height: 200px;
+       background: var(--bg-elevated);
+       display: flex;
+       align-items: center;
+       justify-content: center;
+   }
+   
+   .recommend-img-placeholder::after {
+       content: "NO IMAGE";
+       font-family: 'Space Grotesk', 'Inter', sans-serif;
+       font-size: 1.2rem;
+       color: var(--text-disabled);
+       font-weight: 600;
+       letter-spacing: 0.1em;
+   }
+   
+   .content img { border-radius: var(--r-md); margin-bottom: var(--sp-md); }
+   
+   /* ============================================
+      検索フォーム
+      ============================================ */
+   form[style*="display:flex"] {
+       display: flex !important;
+       align-items: center;
+       gap: var(--sp-md);
+       flex-wrap: wrap;
+       padding: var(--sp-lg);
+       background: var(--bg-elevated);
+       border: 1px solid var(--border-default);
+       border-radius: var(--r-lg);
+   }
+   
+   form[style*="display:flex"] label { margin-bottom: 0; }
+   form[style*="display:flex"] select,
+   form[style*="display:flex"] input[type="text"] { min-width: 160px; }
+   form[style*="display:flex"] button { margin-top: 0; padding: 10px 24px; }
+   
+   /* ============================================
+      星評価
+      ============================================ */
+   .star-rating { color: var(--ig-orange); font-size: 2.0rem; letter-spacing: 2px; }
+   .star-rating .star-empty { color: var(--border-default); }
+   
+   /* ============================================
+      一般テキスト
+      ============================================ */
+   .content > p {
+       font-size: 1.5rem;
+       color: var(--text-secondary);
+       margin: var(--sp-sm) 0;
+       line-height: 1.7;
+   }
+   
+   .content > a {
+       display: inline-block;
+       margin: var(--sp-xs) 0;
+       padding: var(--sp-xs) 0;
+       font-size: 1.5rem;
+   }
+   
+   /* ============================================
+      レスポンシブ
+      ============================================ */
+   @media screen and (max-width: 768px) {
+       .content {
+           margin: var(--sp-md);
+           padding: var(--sp-lg);
+           border-radius: var(--r-lg);
+       }
+       h2 { font-size: 2.4rem; }
+       h3 { font-size: 1.8rem; }
+       table { font-size: 1.2rem; }
+       th, td { padding: 10px 12px; }
+       input[type="text"], input[type="password"],
+       input[type="number"], input[type="email"],
+       select { min-width: 100%; }
+       form[style*="display:flex"] { flex-direction: column; align-items: stretch; }
+       input[type="submit"], button[type="submit"], .btn-lg { width: 100%; }
+       .recommend-grid { grid-template-columns: repeat(2, 1fr); gap: var(--sp-sm); }
+       .steps { font-size: 1.0rem; }
+       .steps .step-number { width: 24px; height: 24px; font-size: 1.0rem; }
+       .steps .step-divider { width: 20px; }
+       .form-row { flex-direction: column; align-items: flex-start; gap: var(--sp-sm); }
+       .section a { padding: 12px var(--sp-sm); margin: 0 calc(var(--sp-sm) * -1); }
+       .splash-title { font-size: 4.8rem; }
+   }
+   
+   @media screen and (max-width: 480px) {
+       .content { margin: var(--sp-sm); padding: var(--sp-md); border-radius: var(--r-md); }
+       h2 { font-size: 2.0rem; }
+       h3 { font-size: 1.6rem; }
+       .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+       .recommend-grid { grid-template-columns: 1fr; }
+       .steps .step span:not(.step-number) { display: none; }
+       .splash-title { font-size: 3.6rem; }
+       .splash-subtitle { font-size: 1.3rem; }
+   }

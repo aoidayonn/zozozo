@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>管理者メニュー</title>
-</head>
-<body>
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}管理者メニュー{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>管理者メニュー</h3>
         <p>ようこそ {{ admin_id }} さん</p>
@@ -23,5 +22,4 @@
         <a href="{% url 'soso:admin_logout' %}">ログアウト</a><br>
         <a href="{% url 'soso:top_page' %}">商品検索に戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

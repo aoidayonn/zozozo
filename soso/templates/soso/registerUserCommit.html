@@ -1,15 +1,13 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>会員登録完了</title>
-</head>
-<body>
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}会員登録完了{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>{{ user_info.name }}さんの会員登録が完了しました。</h3>
 
         <br>
         <a href="{% url 'soso:top_page' %}">商品検索に戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

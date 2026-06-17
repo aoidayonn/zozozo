@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>会員情報変更</title>
-</head>
-<body>
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}会員情報変更{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>会員情報を変更してください。</h3>
 
@@ -22,5 +21,4 @@
         <a href="{% url 'soso:user_withdraw_confirm' %}">退会する</a><br>
         <a href="{% url 'soso:top_page' %}">商品検索に戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

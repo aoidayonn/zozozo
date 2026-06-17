@@ -1,0 +1,45 @@
+{% extends "soso/base.html" %}
+{% load static %}
+
+{% block title %}購入履歴一覧{% endblock %}
+
+{% block content %}
+    <div class="content">
+        <h3>購入履歴一覧</h3>
+
+        {% if purchases %}
+        <table border="1">
+            <tr>
+                <th>注文ID</th>
+                <th>注文日</th>
+                <th>配送先</th>
+                <th>キャンセル</th>
+            </tr>
+
+            {% for purchase in purchases %}
+            <tr>
+                <td>
+                    <a href="{% url 'soso:user_purchase_detail' purchase.purchase_id %}">
+                        注文{{ purchase.purchase_id }}
+                    </a>
+                </td>
+                <td>{{ purchase.booked_date|date:"Y/m/d H:i" }}</td>
+                <td>{{ purchase.destination }}</td>
+                <td>
+                    {% if purchase.cancel %}
+                        <span style="color:red;">済</span>
+                    {% else %}
+                        未
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        {% else %}
+            <p>購入履歴はありません。</p>
+        {% endif %}
+
+        <a href="{% url 'soso:user_info' %}">会員情報に戻る</a>
+    </div>
+    {% endblock %}

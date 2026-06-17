@@ -1,40 +1,95 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>商品検索</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'message/css/style.css' %}" />
-</head>
-<body>
-    <div class="content">
-        <h1>商品を検索してくれ！！！！！</h1>
 
-        <div class="form">
-            <!-- ★ style="display:inline" で横並び -->
-            <form action="{% url 'soso:search_result' %}" method="GET" style="display:flex; align-items:center; gap:10px;">
-                {{ form.category.label }}
-                {{ form.category }}
-                {{ form.keyword.label }}
-                {{ form.keyword }}
-                <button type="submit">検索</button>
-            </form>
-        </div>
 
-        <br>
-            <a href="{% url 'soso:shopping_cart' %}">ショッピングカートを見る</a><br><br>
+{% block title %}SOSO - ホーム{% endblock %}
 
-		{% if user_info %}
-            ようこそ{{ user_info.name }}さん<br>
-            <a href="{% url 'soso:user_info' %}">会員情報の確認</a><br>
-            <a href="{% url 'soso:user_update' %}">会員情報の変更</a><br>
-            <a href="{% url 'soso:user_logout' %}">ログアウト</a><br>
-        {% else %}
-            <a href="{% url 'soso:user_login' %}">ログイン</a><br><br>
-        {% endif %}
-        <br>
-        <a href="{% url 'soso:admin_login' %}">管理者用ログインはこちら</a>
+{% block extra_css %}
+<script src="{% static 'soso/js/neko.js' %}"></script>
 
+{% endblock %}
+
+{% block content %}
+
+    <!-- スプラッシュ画面（main.htmlだけの要素） -->
+    <div class="splash" id="splash">
+        <div class="splash-title">SOSO CITY</div>
+        <div class="splash-subtitle">How Are You Today</div>
+        <div class="splash-line"></div>
     </div>
-</body>
-</html>
+
+    <div class="main-content">
+        <div class="content">
+
+            {% if user_info %}
+                <p>ようこそ、{{ user_info.name }}さん。</p>
+            {% endif %}
+
+            <h2>ストア</h2>
+            <p>お気に入りの商品を見つけましょう。</p>
+
+            <!-- 検索フォーム -->
+            <div class="form">
+                <form action="{% url 'soso:search_result' %}" method="GET" style="display:flex; align-items:center; gap:10px;">
+                    {{ form.category.label }}
+                    {{ form.category }}
+                    {{ form.keyword.label }}
+                    {{ form.keyword }}
+                    <button type="submit">検索</button>
+                </form>
+            </div>
+
+            <!-- おすすめ商品 -->
+            {% if recommended_items %}
+            <div class="recommend-section">
+                <h3 class="recommend-title">おすすめ</h3>
+                <div class="recommend-grid">
+                    {% for item in recommended_items %}
+                    <div class="recommend-card">
+                        <a href="{% url 'soso:item_detail' item.item_id %}">
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" class="recommend-img">
+                            {% else %}
+                            <div class="recommend-img-placeholder"></div>
+                            {% endif %}
+                            <div class="recommend-card-body">
+                                <p class="recommend-name">{{ item.name }}</p>
+                                <p class="recommend-info">{{ item.manufacturer }} / {{ item.color }}</p>
+                                <p class="recommend-price">¥{{ item.price }}</p>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ショッピング -->
+            <h4>ショッピング</h4>
+            <div class="section">
+                <a href="{% url 'soso:review_timeline' %}">🐱 みんなのレビューを見る</a><br>
+                <a href="{% url 'soso:shopping_cart' %}">ショッピングカートを見る</a><br>
+                <a href="{% url 'soso:user_purchase_history' %}">購入履歴</a>
+            </div>
+
+            <!-- アカウント -->
+            <h4>アカウント</h4>
+            <div class="section">
+                {% if user_info %}
+                    <a href="{% url 'soso:user_info' %}">会員情報の確認</a><br>
+                    <a href="{% url 'soso:user_update' %}">会員情報の変更</a><br>
+                    <a href="{% url 'soso:user_logout' %}">ログアウト</a><br>
+                {% else %}
+                    <a href="{% url 'soso:user_login' %}">ログイン</a><br>
+                {% endif %}
+            </div>
+
+            <!-- 管理者 -->
+            <div class="section" style="border-bottom: none;">
+                <a href="{% url 'soso:admin_login' %}">管理者用ログイン</a>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
