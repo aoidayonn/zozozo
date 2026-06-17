@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.validators import MinValueValidator, MaxValueValidator
 class AccountUser(models.Model):
     # 記事モデル
     class Meta:
@@ -98,3 +98,19 @@ class AdministratorAdmin(models.Model):
     # テーブルフィールド定義
     admin_id = models.CharField(verbose_name="管理者ID", max_length=128 ,primary_key=True)
     password = models.CharField(verbose_name="パスワード", max_length=256)
+
+
+class ShoppingReview(models.Model):
+    class Meta:
+        db_table = "shopping_review"
+        unique_together = ("item", "user")
+
+    review_id = models.AutoField(verbose_name="レビューID", primary_key=True)
+    rating = models.IntegerField(
+        verbose_name="評価",
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+    )
+    comment = models.CharField(verbose_name="コメント", max_length=500)
+    created_at = models.DateTimeField(verbose_name="投稿日", auto_now_add=True)
+    item = models.ForeignKey(ShoppingItem, verbose_name="商品ID", on_delete=models.CASCADE)
+    user = models.ForeignKey(AccountUser, verbose_name="会員ID", on_delete=models.CASCADE)
