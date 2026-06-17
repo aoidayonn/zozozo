@@ -104,3 +104,91 @@ strong { font-size:1.8rem; font-weight:700; color:#111; }
     h3 { font-size:1.6rem; }
     .recommend-grid { grid-template-columns:1fr; }
 }
+/* ============================================
+   スプラッシュ（ZOZO完成版）
+   ============================================ */
+
+   .splash {
+    position: fixed;
+    inset: 0;
+    background: #ffffff;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    animation: splashFadeOut 0.6s ease 2.0s forwards;
+}
+
+/* タイトル */
+.splash-title {
+    font-size: 7.2rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #06b4ed;
+
+    opacity: 0;
+    transform: translateY(12px);
+    animation: splashTitleIn 0.6s ease 0.2s forwards;
+}
+
+/* サブタイトル */
+.splash-subtitle {
+    font-size: 1.3rem;
+    color: #888;
+    letter-spacing: 0.18em;
+    margin-top: 20px;
+
+    opacity: 0;
+    animation: splashSubIn 0.5s ease 0.8s forwards;
+}
+
+/* ライン（アクセント） */
+.splash-line {
+    width: 80px;
+    height: 2px;
+    background: #06b4ed;
+    margin-top: 20px;
+
+    opacity: 0;
+    transform: scaleX(0);
+    animation: splashLineIn 0.4s ease 1.2s forwards;
+}
+
+/* メイン表示 */
+.main-content {
+    opacity: 0;
+    animation: mainFadeIn 0.5s ease 2.2s forwards;
+}
+
+/* アニメーション */
+@keyframes splashTitleIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes splashSubIn {
+    to { opacity: 1; }
+}
+
+@keyframes splashLineIn {
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes splashFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes mainFadeIn {
+    to { opacity: 1; }
+}
