@@ -1,0 +1,107 @@
+/* ============================================
+   テーマ: ストリート風 (ボールド + ダーク)
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:62.5%; scroll-behavior:smooth; }
+
+body {
+    font-family: 'Outfit', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #f0f0f0;
+    background-color: #0a0a0a;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+}
+
+.content {
+    max-width: 920px;
+    margin: 40px auto;
+    padding: 40px 48px;
+    background: #1a1a1a;
+    border-radius: 4px;
+    border: 1px solid #333;
+    box-shadow: 0 0 40px rgba(255,255,0,0.03);
+}
+
+h1 { font-size:3.2rem; font-weight:900; color:#fff; margin-bottom:24px; letter-spacing:-0.02em; text-transform:uppercase; }
+h3 { font-size:2.2rem; font-weight:800; color:#fff; margin-bottom:24px; padding-bottom:12px; border-bottom:3px solid #e6ff00; letter-spacing:0.02em; text-transform:uppercase; }
+h4 { font-size:1.5rem; font-weight:700; color:#e6ff00; margin-top:28px; margin-bottom:12px; padding-left:12px; border-left:4px solid #e6ff00; text-transform:uppercase; letter-spacing:0.06em; }
+
+.form { margin:20px 0; }
+form { margin:0; }
+
+input[type="text"], input[type="password"], input[type="number"], select {
+    font-family:inherit; font-size:1.4rem; padding:10px 14px;
+    border:1px solid #444; border-radius:2px; background:#0a0a0a;
+    color:#f0f0f0; transition:all 0.2s ease; outline:none; min-width:220px;
+}
+input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, select:focus {
+    border-color:#e6ff00; box-shadow:0 0 0 3px rgba(230,255,0,0.15); background:#111;
+}
+input[type="checkbox"] { width:18px; height:18px; accent-color:#e6ff00; cursor:pointer; }
+input[readonly] { background:#111; color:#666; cursor:default; }
+input[disabled] { background:#111; color:#555; cursor:not-allowed; }
+
+input[type="submit"], button[type="submit"] {
+    font-family:inherit; font-size:1.4rem; font-weight:800; padding:12px 36px;
+    margin-top:16px; color:#0a0a0a; background:#e6ff00; border:2px solid #e6ff00;
+    border-radius:2px; cursor:pointer; letter-spacing:0.1em; text-transform:uppercase; transition:all 0.2s ease;
+}
+input[type="submit"]:hover, button[type="submit"]:hover { background:transparent; color:#e6ff00; }
+
+table { width:100%; border-collapse:collapse; margin:16px 0; font-size:1.4rem; }
+table[border="1"] { border:none; }
+th, td { padding:12px 16px; text-align:left; border-bottom:1px solid #333; }
+th { font-weight:700; color:#0a0a0a; background:#e6ff00; white-space:nowrap; text-transform:uppercase; letter-spacing:0.04em; font-size:1.2rem; }
+table tr:first-child th { background:#e6ff00; color:#0a0a0a; }
+table tr:nth-child(even) { background:#151515; }
+table tr:hover { background:#222; }
+table tr th:first-child { width:160px; background:#222; color:#e6ff00; }
+
+.form table { border:none; }
+.form table tr:first-child th { background:transparent; color:#aaa; text-transform:none; letter-spacing:normal; font-size:1.4rem; }
+.form table th { background:transparent; color:#aaa; font-weight:500; padding-right:16px; vertical-align:middle; text-transform:none; letter-spacing:normal; font-size:1.4rem; }
+.form table td { padding:8px 0; border-bottom:none; }
+.form table tr:hover { background:transparent; }
+
+a { color:#e6ff00; text-decoration:none; font-weight:600; border-bottom:1px solid transparent; transition:all 0.2s; }
+a:hover { border-bottom-color:#e6ff00; opacity:0.8; }
+
+p[style*="color:red"], .error-message {
+    color:#ff4444 !important; font-size:1.3rem; font-weight:500;
+    background:#2a1010; border:1px solid #5a2020; border-radius:2px; padding:10px 16px; margin-bottom:16px;
+}
+.errorlist { color:#ff4444; font-size:1.2rem; font-weight:400; list-style:none; padding:0; margin:4px 0 0 0; }
+.errorlist li { margin:2px 0; }
+
+strong { font-size:1.8rem; font-weight:800; color:#fff; }
+
+.recommend-section { margin:24px 0; }
+.recommend-title { font-size:2.4rem; font-weight:900; color:#fff; border-bottom:3px solid #e6ff00; padding-bottom:12px; margin-bottom:24px; text-transform:uppercase; }
+.recommend-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px; }
+.recommend-card { background:#1a1a1a; border:1px solid #333; border-radius:4px; overflow:hidden; transition:all 0.2s ease; }
+.recommend-card:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(230,255,0,0.1); border-color:#e6ff00; }
+.recommend-card a { text-decoration:none; color:inherit; border-bottom:none; display:block; }
+.recommend-card a:hover { opacity:1; border-bottom:none; }
+.recommend-card-body { padding:20px 16px; }
+.recommend-name { font-size:1.6rem; font-weight:700; color:#fff; margin-bottom:8px; text-transform:uppercase; }
+.recommend-info { font-size:1.2rem; color:#888; margin-bottom:12px; }
+.recommend-price { font-size:2.0rem; font-weight:800; color:#e6ff00; }
+.recommend-img { width:100%; height:200px; object-fit:cover; display:block; }
+.content img { border-radius:4px; margin-bottom:16px; }
+
+select option { background:#0a0a0a; color:#f0f0f0; }
+
+@media screen and (max-width:768px) {
+    .content { margin:16px; padding:24px 20px; }
+    h3 { font-size:1.8rem; }
+    table { font-size:1.2rem; }
+    .recommend-grid { grid-template-columns:repeat(2, 1fr); gap:12px; }
+}
+@media screen and (max-width:480px) {
+    .content { margin:8px; padding:16px 12px; }
+    .recommend-grid { grid-template-columns:1fr; }
+}
