@@ -15,6 +15,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Static files
+STATIC_URL = 'static/'
+
+# ★ メディアファイル（画像アップロード用）を追加
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 
 # Quick-start development settings - unsuitable for production

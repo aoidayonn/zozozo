@@ -39,6 +39,14 @@ class ShoppingItem(models.Model):
     stock = models.IntegerField(verbose_name="在庫数")
     recommended = models.BooleanField(verbose_name="おすすめ", max_length=1, default=False)
     category = models.ForeignKey(ShoppingCategory, verbose_name="カテゴリID", on_delete=models.CASCADE)
+    # ★ 画像フィールドを追加
+    image = models.ImageField(
+        verbose_name="商品画像",
+        upload_to="soso/images/",
+        blank=True,
+        null=True,
+    )
+
 
 
 class ShoppingItemsincart(models.Model):
