@@ -1,0 +1,209 @@
+-- ========================================
+-- 🐱 ねこ販売ショップ テストデータ
+-- ========================================
+
+-- ========================================
+-- カテゴリ（猫の種類別）
+-- ========================================
+INSERT INTO shopping_category (category_id, name) VALUES (1, '短毛種');
+INSERT INTO shopping_category (category_id, name) VALUES (2, '長毛種');
+INSERT INTO shopping_category (category_id, name) VALUES (3, '大型種');
+INSERT INTO shopping_category (category_id, name) VALUES (4, 'レア種');
+
+-- ========================================
+-- 商品（短毛種）
+-- ========================================
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (1, 'スコティッシュフォールド', 'にゃんブリード東京', 'クリーム', 280000, 3, 1, 1, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (2, 'アメリカンショートヘア', 'キャッテリーさくら', 'シルバータビー', 220000, 5, 1, 1, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (3, 'ブリティッシュショートヘア', 'ロイヤルキャッテリー', 'ブルー', 320000, 2, 0, 1, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (4, 'ロシアンブルー', 'ブリーダーズ北海道', 'ブルー', 250000, 4, 0, 1, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (5, 'シャム猫', 'オリエンタルキャッテリー', 'シールポイント', 180000, 3, 0, 1, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (6, 'アビシニアン', 'にゃんブリード東京', 'ルディ', 260000, 2, 0, 1, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (7, 'ベンガル', 'ワイルドキャッテリー', 'ブラウンスポット', 350000, 0, 0, 1, '');
+
+-- ========================================
+-- 商品（長毛種）
+-- ========================================
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (8, 'マンチカン', 'もふもふブリーダー', 'レッドタビー', 300000, 3, 1, 2, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (9, 'ペルシャ', 'ロイヤルキャッテリー', 'ホワイト', 280000, 2, 0, 2, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (10, 'ラグドール', 'もふもふブリーダー', 'バイカラー', 320000, 4, 1, 2, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (11, 'ノルウェージャンフォレストキャット', 'ブリーダーズ北海道', 'ブラウンタビー', 290000, 2, 0, 2, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (12, 'ソマリ', 'オリエンタルキャッテリー', 'ルディ', 270000, 0, 0, 2, '');
+
+-- ========================================
+-- 商品（大型種）
+-- ========================================
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (13, 'メインクーン', 'ブリーダーズ北海道', 'ブラウンタビー', 380000, 2, 1, 3, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (14, 'サイベリアン', 'ブリーダーズ北海道', 'シルバー', 350000, 3, 0, 3, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (15, 'ラガマフィン', 'もふもふブリーダー', 'クリーム', 300000, 1, 0, 3, '');
+
+-- ========================================
+-- 商品（レア種）
+-- ========================================
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (16, 'サバンナキャット', 'ワイルドキャッテリー', 'ゴールドスポット', 500000, 1, 1, 4, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (17, 'エキゾチックショートヘア', 'ロイヤルキャッテリー', 'レッドタビー', 350000, 2, 0, 4, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (18, 'スフィンクス', 'オリエンタルキャッテリー', 'ピンク', 400000, 0, 0, 4, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (19, 'ミヌエット', 'にゃんブリード東京', 'キャリコ', 380000, 2, 0, 4, '');
+INSERT INTO shopping_item (item_id, name, manufacturer, color, price, stock, recommended, category_id, image) VALUES (20, 'トイガー', 'ワイルドキャッテリー', 'タイガーストライプ', 450000, 1, 0, 4, '');
+
+-- ========================================
+-- テスト用ユーザー（8名）
+-- ========================================
+INSERT INTO account_user (user_id, password, name, address) VALUES ('nekosuki', 'pass1234', '猫好き太郎', '東京都世田谷区猫町1-2-3');
+INSERT INTO account_user (user_id, password, name, address) VALUES ('mofu_lover', 'pass1234', 'もふもふ花子', '大阪府大阪市猫区もふもふ通り4-5');
+INSERT INTO account_user (user_id, password, name, address) VALUES ('catmania', 'pass1234', '佐藤にゃん太', '京都府京都市猫寺町6-7-8');
+INSERT INTO account_user (user_id, password, name, address) VALUES ('nyanko', 'pass1234', '田中ミケ子', '北海道札幌市にゃんこ大通9-10');
+INSERT INTO account_user (user_id, password, name, address) VALUES ('pawpad', 'pass1234', '肉球プニ男', '福岡県福岡市猫島11-12-13');
+INSERT INTO account_user (user_id, password, name, address) VALUES ('whiskers', 'pass1234', 'ひげ丸タマ', '神奈川県横浜市にゃんぱく通り14-15');
+INSERT INTO account_user (user_id, password, name, address) VALUES ('calico', 'pass1234', '三毛山みーこ', '愛知県名古屋市猫城16-17-18');
+INSERT INTO account_user (user_id, password, name, address) VALUES ('kitten', 'pass1234', '子猫田こねこ', '沖縄県那覇市南国にゃん19-20');
+
+-- ========================================
+-- 管理者
+-- ========================================
+INSERT INTO administrator_admin (admin_id, password) VALUES ('admin', 'admin123');
+INSERT INTO administrator_admin (admin_id, password) VALUES ('store_mgr', 'manager456');
+
+-- ========================================
+-- カート内商品
+-- ========================================
+-- nekosuki のカート
+INSERT INTO shopping_itemsincart (amount, booked_date, item_id, user_id) VALUES (1, '2026-06-16 10:00:00', 1, 'nekosuki');
+INSERT INTO shopping_itemsincart (amount, booked_date, item_id, user_id) VALUES (1, '2026-06-16 10:05:00', 10, 'nekosuki');
+
+-- mofu_lover のカート
+INSERT INTO shopping_itemsincart (amount, booked_date, item_id, user_id) VALUES (1, '2026-06-15 14:30:00', 8, 'mofu_lover');
+INSERT INTO shopping_itemsincart (amount, booked_date, item_id, user_id) VALUES (1, '2026-06-15 14:35:00', 13, 'mofu_lover');
+
+-- catmania のカート
+INSERT INTO shopping_itemsincart (amount, booked_date, item_id, user_id) VALUES (1, '2026-06-16 09:00:00', 16, 'catmania');
+
+-- whiskers のカート
+INSERT INTO shopping_itemsincart (amount, booked_date, item_id, user_id) VALUES (1, '2026-06-16 11:30:00', 3, 'whiskers');
+INSERT INTO shopping_itemsincart (amount, booked_date, item_id, user_id) VALUES (1, '2026-06-16 11:32:00', 14, 'whiskers');
+
+-- ========================================
+-- 購入履歴
+-- ========================================
+-- nekosuki の注文（3件、うち1件キャンセル）
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1001, '東京都世田谷区猫町1-2-3', '2026-03-10 09:00:00', 0, 'nekosuki');
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1002, '東京都世田谷区猫町1-2-3', '2026-05-01 12:30:00', 0, 'nekosuki');
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1003, '東京都世田谷区猫町1-2-3', '2026-06-01 18:00:00', 1, 'nekosuki');
+
+-- mofu_lover の注文（2件）
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1004, '大阪府大阪市猫区もふもふ通り4-5', '2026-04-20 11:00:00', 0, 'mofu_lover');
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1005, '大阪府大阪市猫区もふもふ通り4-5', '2026-06-10 16:45:00', 0, 'mofu_lover');
+
+-- catmania の注文（2件、うち1件キャンセル）
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1006, '京都府京都市猫寺町6-7-8', '2026-04-05 08:30:00', 0, 'catmania');
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1007, '京都府京都市猫寺町6-7-8', '2026-06-12 20:00:00', 1, 'catmania');
+
+-- nyanko の注文（1件）
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1008, '北海道札幌市にゃんこ大通9-10', '2026-05-14 13:00:00', 0, 'nyanko');
+
+-- pawpad の注文（2件）
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1009, '福岡県福岡市猫島11-12-13', '2026-03-25 10:00:00', 0, 'pawpad');
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1010, '福岡県福岡市猫島11-12-13', '2026-06-08 15:30:00', 0, 'pawpad');
+
+-- whiskers の注文（1件）
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1011, '神奈川県横浜市にゃんぱく通り14-15', '2026-06-13 09:15:00', 0, 'whiskers');
+
+-- calico の注文（1件）
+INSERT INTO shopping_purchase (purchase_id, destination, booked_date, cancel, user_id) VALUES (1012, '愛知県名古屋市猫城16-17-18', '2026-05-30 14:00:00', 0, 'calico');
+
+-- ========================================
+-- 注文詳細
+-- ========================================
+-- 注文1001（nekosuki）：スコティッシュ購入
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (1, 1, 1, 1001);
+
+-- 注文1002（nekosuki）：アメショー購入
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (2, 1, 2, 1002);
+
+-- 注文1003（nekosuki キャンセル）：メインクーン
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (3, 1, 13, 1003);
+
+-- 注文1004（mofu_lover）：ペルシャ
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (4, 1, 9, 1004);
+
+-- 注文1005（mofu_lover）：ラグドール
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (5, 1, 10, 1005);
+
+-- 注文1006（catmania）：ロシアンブルー＋シャム
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (6, 1, 4, 1006);
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (7, 1, 5, 1006);
+
+-- 注文1007（catmania キャンセル）：サバンナ
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (8, 1, 16, 1007);
+
+-- 注文1008（nyanko）：ノルウェージャン
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (9, 1, 11, 1008);
+
+-- 注文1009（pawpad）：マンチカン
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (10, 1, 8, 1009);
+
+-- 注文1010（pawpad）：アビシニアン
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (11, 1, 6, 1010);
+
+-- 注文1011（whiskers）：ブリショー＋エキゾチック
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (12, 1, 3, 1011);
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (13, 1, 17, 1011);
+
+-- 注文1012（calico）：ミヌエット
+INSERT INTO shopping_purchasedetail (purchase_detail_id, amount, item_id, purchase_id) VALUES (14, 1, 19, 1012);
+
+-- ========================================
+-- レビュー
+-- ========================================
+-- スコティッシュフォールド（item_id=1）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '折れ耳がたまらなくかわいい！初日からゴロゴロ言ってくれました。家族全員メロメロです', '2026-03-20 10:30:00', 1, 'nekosuki');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '大人しくて飼いやすい子です。ブリーダーさんの育て方が良かったのかな', '2026-06-01 14:00:00', 1, 'calico');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, '写真通りのかわいさ！ただ、最初は少し人見知りでした', '2026-05-10 09:00:00', 1, 'whiskers');
+
+-- アメリカンショートヘア（item_id=2）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '2匹目のアメショー。やっぱりこの子たちは最高。元気いっぱいで毎日笑わせてくれます', '2026-05-15 11:00:00', 2, 'nekosuki');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, 'シルバータビーの模様が本当に美しい。性格も穏やかで初心者にもおすすめ', '2026-06-05 16:30:00', 2, 'mofu_lover');
+
+-- ブリティッシュショートヘア（item_id=3）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, 'まるでぬいぐるみ！もちもちの体を抱きしめるのが至福の時間です', '2026-06-15 08:00:00', 3, 'whiskers');
+
+-- ロシアンブルー（item_id=4）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '気品のある佇まい。静かで上品な子です。目の色がエメラルドグリーンで宝石みたい', '2026-04-15 13:00:00', 4, 'catmania');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, 'とても賢い子で、名前を呼ぶとちゃんと来てくれます', '2026-05-28 17:00:00', 4, 'nyanko');
+
+-- シャム猫（item_id=5）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, 'よくしゃべる子です（笑）一緒に会話してる気分になります。甘えん坊で離れてくれない', '2026-04-20 12:00:00', 5, 'catmania');
+
+-- マンチカン（item_id=8）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '短い足でトコトコ走る姿がかわいすぎて動画撮りまくってます。SNSでもバズりました', '2026-04-05 15:00:00', 8, 'pawpad');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '想像以上に活発！短足でもジャンプ力がすごい。見た目とのギャップにやられます', '2026-06-01 10:00:00', 8, 'mofu_lover');
+
+-- ペルシャ（item_id=9）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, '毛のお手入れは大変だけど、その分モフモフ感は最高。おっとりした性格に癒されます', '2026-05-01 14:30:00', 9, 'mofu_lover');
+
+-- ラグドール（item_id=10）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '名前通り抱っこするとぬいぐるみみたいに脱力する！大きくてもふもふで最高のパートナー', '2026-06-12 11:00:00', 10, 'mofu_lover');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '穏やかで優しい子。子供がいる家庭にもおすすめです', '2026-05-20 09:30:00', 10, 'nekosuki');
+
+-- ノルウェージャン（item_id=11）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '北海道の冬も平気！もふもふの被毛が暖かそう。冒険好きで窓の外をずっと見てます', '2026-05-25 08:00:00', 11, 'nyanko');
+
+-- メインクーン（item_id=13）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, 'でかい。とにかくでかい。でも性格は「穏やかな巨人」。最高の相棒です', '2026-06-10 19:00:00', 13, 'pawpad');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, '犬みたいに懐く。お出迎えしてくれるのが嬉しい。ご飯代が想像以上にかかります（笑）', '2026-05-18 13:00:00', 13, 'calico');
+
+-- サバンナキャット（item_id=16）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, 'ワイルドな見た目に一目惚れ。高かったけど後悔ゼロ。リードつけて散歩もできます', '2026-05-08 16:00:00', 16, 'pawpad');
+
+-- エキゾチックショートヘア（item_id=17）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, 'ぶさかわの王様。あのつぶれた顔がたまらない。写真映えが半端ないです', '2026-06-14 10:00:00', 17, 'whiskers');
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, 'ペルシャほど毛の手入れが大変じゃないのが良い。可愛さはトップクラス', '2026-06-08 20:00:00', 17, 'mofu_lover');
+
+-- ミヌエット（item_id=19）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, 'マンチカン×ペルシャのいいとこ取り！短い足にもふもふの毛、完璧です', '2026-06-03 07:30:00', 19, 'calico');
+
+-- アビシニアン（item_id=6）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (4, 'スリムで優雅。動きが本当に美しい。飼い主への忠誠心も高いです', '2026-06-10 15:00:00', 6, 'pawpad');
+
+-- トイガー（item_id=20）
+INSERT INTO shopping_review (rating, comment, created_at, item_id, user_id) VALUES (5, '自宅にミニタイガーがいる生活。友達が遊びに来ると全員驚きます', '2026-05-15 18:00:00', 20, 'catmania');
