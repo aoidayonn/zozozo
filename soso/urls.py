@@ -17,6 +17,14 @@ urlpatterns = [
     path("searchResult/", views.SearchResult.as_view(), name="search_result"),
     path("itemDetail/<int:item_id>/", views.ItemDetail.as_view(), name="item_detail"),
     path("cart/", views.ShoppingCart.as_view(), name="shopping_cart"),
+    path("cart/update/<int:cart_id>/", views.ShoppingCartUpdate.as_view(), name="cart_update"),
+    path("cart/delete/<int:cart_id>/", views.ShoppingCartDelete.as_view(), name="cart_delete"),
+    path("purchase/", views.Purchase.as_view(), name="purchase"),
+    path("purchase/confirm/", views.PurchaseConfirm.as_view(), name="purchase_confirm"),
+    path("purchase/commit/", views.PurchaseCommit.as_view(), name="purchase_commit"),
+    path("purchaseHistory/", views.UserPurchaseHistory.as_view(), name="user_purchase_history"),
+    path("purchaseHistory/<int:purchase_id>/", views.UserPurchaseDetail.as_view(), name="user_purchase_detail"),
+
 
     # ★ 管理者用
     path("adminLogin/", views.AdminLogin.as_view(), name="admin_login"),

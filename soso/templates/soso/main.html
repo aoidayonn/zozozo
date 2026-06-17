@@ -21,6 +21,8 @@
         </div>
 
         <br>
+            <a href="{% url 'soso:shopping_cart' %}">ショッピングカートを見る</a><br><br>
+            <a href="{% url 'soso:user_purchase_history' %}">購入履歴</a><br><br>
 
         {% if recommended_items %}
         <div class="recommend-section">
