@@ -146,11 +146,14 @@ class ItemForm(forms.Form):
         error_messages={"min_value": "在庫数は0以上で入力してください"},
     )
     recommended = forms.BooleanField(label="おすすめ:", required=False)
-
-    # ★ カスタムフィールドに変更
     category = CategoryChoiceField(
         label="カテゴリ:",
         queryset=ShoppingCategory.objects.all(),
+    )
+    # ★ 画像フィールド追加
+    image = forms.ImageField(
+        label="商品画像:",
+        required=False,
     )
 
 
@@ -174,11 +177,14 @@ class ItemEditForm(forms.Form):
         error_messages={"min_value": "在庫数は0以上で入力してください"},
     )
     recommended = forms.BooleanField(label="おすすめ:", required=False)
-
-    # ★ カスタムフィールドに変更
     category = CategoryChoiceField(
         label="カテゴリ:",
         queryset=ShoppingCategory.objects.all(),
+    )
+    # ★ 画像フィールド追加
+    image = forms.ImageField(
+        label="商品画像:",
+        required=False,
     )
 
 

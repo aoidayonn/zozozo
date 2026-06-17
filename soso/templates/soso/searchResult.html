@@ -13,6 +13,7 @@
         {% if products %}
         <table border="1">
             <tr>
+                <th>画像</th>
                 <th>商品名</th>
                 <th>色</th>
                 <th>メーカー</th>
@@ -20,6 +21,13 @@
             </tr>
             {% for product in products %}
             <tr>
+                <td>
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" width="80">
+                    {% else %}
+                    -
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{% url 'soso:item_detail' product.item_id %}">
                         {{ product.name }}
