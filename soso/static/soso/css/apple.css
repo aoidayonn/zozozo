@@ -105,3 +105,98 @@ strong { font-size:1.8rem; font-weight:700; color:#1d1d1f; }
     .content { margin:8px; padding:20px 16px; }
     .recommend-grid { grid-template-columns:1fr; }
 }
+/* ============================================
+   スプラッシュ（Apple風）
+   ============================================ */
+
+/* 全画面オーバーレイ */
+.splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background: #ffffff;
+
+    animation: splashFadeOut 0.8s ease 2.4s forwards;
+}
+
+/* タイトル */
+.splash-title {
+    font-size: 5.6rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1d1d1f;
+
+    opacity: 0;
+    transform: translateY(10px);
+    animation: splashTitleIn 0.7s ease 0.3s forwards;
+}
+
+/* サブタイトル */
+.splash-subtitle {
+    font-size: 1.4rem;
+    color: #6e6e73;
+    letter-spacing: 0.08em;
+    margin-top: 12px;
+
+    opacity: 0;
+    animation: splashSubIn 0.6s ease 0.9s forwards;
+}
+
+/* アンダーライン */
+.splash-line {
+    width: 60px;
+    height: 2px;
+    background: #0071e3;
+    border-radius: 2px;
+    margin-top: 20px;
+
+    opacity: 0;
+    transform: scaleX(0);
+    animation: splashLineIn 0.5s ease 1.3s forwards;
+}
+
+/* メイン */
+.main-content {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: mainFadeIn 0.6s ease 2.8s forwards;
+}
+
+/* アニメーション */
+@keyframes splashTitleIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes splashSubIn {
+    to { opacity: 1; }
+}
+
+@keyframes splashLineIn {
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes splashFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes mainFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
