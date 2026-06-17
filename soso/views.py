@@ -151,12 +151,11 @@ class SearchResult(View):
             category = form.cleaned_data.get("category", "すべて")
             keyword = form.cleaned_data.get("keyword", "")
 
-            category_map = {"帽子": 1, "鞄": 2}
-            category_id = category_map.get(category)
-
             products = ShoppingItem.objects.all()
-            if category_id:
-                products = products.filter(category_id=category_id)
+
+            # ★ category_map 不要！IDで直接フィルタ
+            if category != "すべて":
+                products = products.filter(category_id=category)
             if keyword:
                 products = products.filter(name__icontains=keyword)
 
@@ -891,3 +890,26 @@ class ReviewCreate(View):
             comment=form.cleaned_data["comment"],
         )
         return redirect("soso:item_detail", item_id=item_id)
+    
+    
+from soso.models import (
+    AccountUser, ShoppingItem, ShoppingItemsincart,
+    ShoppingCategory, ShoppingPurchase, ShoppingPurchasedetail,
+    AdministratorAdmin, ShoppingReview,  # ★ 追加
+)
+
+
+# ──────────────────────────────────────
+# レビュータイムライン
+# ──────────────────────────────────────
+class ReviewTimeline(View):
+    def get(self, request):
+        # 新しい順に全レビューを取得（関連データも一緒に）
+        reviews = ShoppingReview.objects.select_related(
+            "item", "user"
+        ).order_by("-created_at")
+
+        context = {
+            "reviews": reviews,
+        }
+        return render(request, "soso/reviewTimeline.html", context)

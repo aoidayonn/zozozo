@@ -10,11 +10,67 @@
 </head>
 <body>
 
+
     <!-- ========== スプラッシュ画面 ========== -->
     <div class="splash" id="splash">
         <div class="splash-title">SOSO CITY</div>
         <div class="splash-subtitle">How Are You Today</div>
         <div class="splash-line"></div>
+
+        <div class="form">
+            <form action="{% url 'soso:search_result' %}" method="GET" style="display:flex; align-items:center; gap:10px;">
+                {{ form.category.label }}
+                {{ form.category }}
+                {{ form.keyword.label }}
+                {{ form.keyword }}
+                <button type="submit">検索</button>
+            </form>
+        </div>
+
+        <a href="{% url 'soso:review_timeline' %}">🐱 みんなのレビューを見る</a><br><br>
+
+        <br>
+            <a href="{% url 'soso:shopping_cart' %}">ショッピングカートを見る</a><br><br>
+            <a href="{% url 'soso:user_purchase_history' %}">購入履歴</a><br><br>
+
+        {% if recommended_items %}
+        <div class="recommend-section">
+            <h3 class="recommend-title">🔥 おすすめ商品！！！！</h3>
+            <div class="recommend-grid">
+                {% for item in recommended_items %}
+                <div class="recommend-card">
+                    <a href="{% url 'soso:item_detail' item.item_id %}">
+                        {% if item.image %}
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" class="recommend-img">
+                        {% endif %}
+                        <div class="recommend-card-body">
+                            <p class="recommend-name">{{ item.name }}</p>
+                            <p class="recommend-info">{{ item.manufacturer }} / {{ item.color }}</p>
+                            <p class="recommend-price">¥{{ item.price }}</p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <br>
+
+        <a href="{% url 'soso:shopping_cart' %}">ショッピングカートを見る</a><br><br>
+
+        {% if user_info %}
+            ようこそ{{ user_info.name }}さん<br>
+            <a href="{% url 'soso:user_info' %}">会員情報の確認</a><br>
+            <a href="{% url 'soso:user_update' %}">会員情報の変更</a><br>
+            <a href="{% url 'soso:user_logout' %}">ログアウト</a><br>
+        {% else %}
+            <a href="{% url 'soso:user_login' %}">ログイン</a><br><br>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'soso:admin_login' %}">管理者用ログインはこちら</a>
+
     </div>
 
     <!-- ========== メインコンテンツ ========== -->

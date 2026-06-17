@@ -91,15 +91,16 @@ class SearchForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.label_suffix = ""
 
-    CATEGORY_CHOICES = [
-        ("すべて", "すべて"),
-        ("帽子", "帽子"),
-        ("鞄", "鞄"),
-    ]
+        # ★ DBからカテゴリを動的に取得
+        category_choices = [("すべて", "すべて")]
+        category_choices += [
+            (str(c.category_id), c.name)
+            for c in ShoppingCategory.objects.all()
+        ]
+        self.fields["category"].choices = category_choices
 
     category = forms.ChoiceField(
         label="カテゴリ:",
-        choices=CATEGORY_CHOICES,
         required=False,
     )
     keyword = forms.CharField(
