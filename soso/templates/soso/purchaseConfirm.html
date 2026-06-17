@@ -1,47 +1,51 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>購入確認</title>
+
     <script src="{% static 'soso/js/main.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
 </head>
 <body>
-    <h3>購入確認画面</h3>
+    <div class="content">
+        <h3>購入確認画面</h3>
 
-    {% if error %}
-    <p style="color:red;">{{ error }}</p>
-    {% endif %}
+        {% if error %}
+        <p style="color:red;">{{ error }}</p>
+        {% endif %}
 
-    <table border="1">
-        <tr>
-            <th>商品名</th>
-            <th>価格</th>
-            <th>数量</th>
-            <th>小計</th>
-        </tr>
+        <table border="1">
+            <tr>
+                <th>商品名</th>
+                <th>価格</th>
+                <th>数量</th>
+                <th>小計</th>
+            </tr>
+            {% for ci in cart_items %}
+            <tr>
+                <td>{{ ci.item.name }}</td>
+                <td>{{ ci.item.price }}円</td>
+                <td>{{ ci.amount }}</td>
+                <td>{{ ci.subtotal }}円</td>
+            </tr>
+            {% endfor %}
+        </table>
 
-        {% for ci in cart_items %}
-        <tr>
-            <td>{{ ci.item.name }}</td>
-            <td>{{ ci.item.price }}円</td>
-            <td>{{ ci.amount }}</td>
-            <td>{{ ci.subtotal }}円</td>
-        </tr>
-        {% endfor %}
-    </table>
+        <p><strong>合計金額：{{ total }}円</strong></p>
+        <p>配送先：{{ destination }}</p>
+        <p>支払い方法：{{ payment_method }}</p>
 
-    <p>合計金額：{{ total }}円</p>
-    <p>配送先：{{ destination }}</p>
-    <p>支払い方法：{{ payment_method }}</p>
+        <form method="post" action="{% url 'soso:purchase_commit' %}">
+            {% csrf_token %}
+            <input type="hidden" name="destination" value="{{ destination }}">
+            <input type="hidden" name="payment_method" value="{{ payment_method }}">
+            <button type="submit">購入する</button>
+        </form>
 
-    <form method="post" action="{% url 'soso:purchase_commit' %}">
-        {% csrf_token %}
-        <input type="hidden" name="destination" value="{{ destination }}">
-        <input type="hidden" name="payment_method" value="cod">
-        <button type="submit">購入する</button>
-    </form>
-
-    <br>
-    <a href="{% url 'soso:shopping_cart' %}">カートに戻る</a>
+        <br>
+        <a href="{% url 'soso:shopping_cart' %}">カートに戻る</a>
+    </div>
 </body>
 </html>

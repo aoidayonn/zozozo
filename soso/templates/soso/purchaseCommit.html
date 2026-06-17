@@ -1,19 +1,23 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>購入完了</title>
     <script src="{% static 'soso/js/main.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
 </head>
 <body>
-    <h2>購入完了</h2>
+    <div class="content">
+        <h3>購入完了</h3>
 
-    <p>購入が完了しました。</p>
-    <p>注文ID：{{ purchase.purchase_id }}</p>
-    <p>配送先：{{ destination }}</p>
-    <p>支払い方法：{{ payment_method }}</p>
-    <p>合計金額：{{ total }}円</p>
+        <p>購入が完了しました。</p>
+        <p>注文ID：{{ purchase.purchase_id }}</p>
+        <p>配送先：{{ destination }}</p>
+        <p>支払い方法：{{ payment_method }}</p>
+        <p><strong>合計金額：{{ total }}円</strong></p>
 
-    <a href="{% url 'soso:top_page' %}">トップに戻る</a>
+        <a href="{% url 'soso:top_page' %}">トップに戻る</a>
+    </div>
 </body>
 </html>
