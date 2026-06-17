@@ -102,9 +102,14 @@ class TopPage(View):
     def get(self, request):
         user_info = get_login_user(request)
         form = SearchForm()
+
+        # ★ おすすめ商品を取得
+        recommended_items = ShoppingItem.objects.filter(recommended=True)
+
         context = {
             "user_info": user_info,
             "form": form,
+            "recommended_items": recommended_items,
         }
         return render(request, "soso/main.html", context)
 
@@ -388,11 +393,11 @@ class AdminItemCreate(View):
         if not admin:
             return redirect("soso:admin_login")
 
-        form = ItemForm(request.POST)
+        # ★ request.FILES を追加（画像データを受け取る）
+        form = ItemForm(request.POST, request.FILES)
         if not form.is_valid():
             return render(request, "soso/adminItemCreate.html", {"form": form})
 
-        # 商品ID重複チェック
         if ShoppingItem.objects.filter(item_id=form.cleaned_data["item_id"]).exists():
             context = {
                 "form": form,
@@ -409,6 +414,7 @@ class AdminItemCreate(View):
             stock=form.cleaned_data["stock"],
             recommended=form.cleaned_data["recommended"],
             category=form.cleaned_data["category"],
+            image=form.cleaned_data.get("image"),  # ★ 画像を保存
         )
         return redirect("soso:admin_item_list")
 
@@ -433,16 +439,26 @@ class AdminItemEdit(View):
             "recommended": item.recommended,
             "category": item.category,
         })
-        return render(request, "soso/adminItemEdit.html", {"form": form, "item_id": item_id})
+        return render(request, "soso/adminItemEdit.html", {
+            "form": form,
+            "item_id": item_id,
+            "item": item,  # ★ 現在の画像表示用
+        })
 
     def post(self, request, item_id):
         admin = get_login_admin(request)
         if not admin:
             return redirect("soso:admin_login")
 
-        form = ItemEditForm(request.POST, initial={"item_id": item_id})
+        # ★ request.FILES を追加
+        form = ItemEditForm(request.POST, request.FILES, initial={"item_id": item_id})
         if not form.is_valid():
-            return render(request, "soso/adminItemEdit.html", {"form": form, "item_id": item_id})
+            item = ShoppingItem.objects.get(item_id=item_id)
+            return render(request, "soso/adminItemEdit.html", {
+                "form": form,
+                "item_id": item_id,
+                "item": item,
+            })
 
         item = ShoppingItem.objects.get(item_id=item_id)
         item.name = form.cleaned_data["name"]
@@ -452,8 +468,12 @@ class AdminItemEdit(View):
         item.stock = form.cleaned_data["stock"]
         item.recommended = form.cleaned_data["recommended"]
         item.category = form.cleaned_data["category"]
-        item.save()
 
+        # ★ 新しい画像がアップロードされた場合のみ更新
+        if form.cleaned_data.get("image"):
+            item.image = form.cleaned_data["image"]
+
+        item.save()
         return redirect("soso:admin_item_list")
 
 

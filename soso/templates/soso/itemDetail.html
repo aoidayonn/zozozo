@@ -10,6 +10,11 @@
     <div class="content">
         <h3>商品詳細</h3>
 
+        <!-- ★ 商品画像を表示 -->
+        {% if item_info.image %}
+        <img src="{{ item_info.image.url }}" alt="{{ item_info.name }}" width="300">
+        {% endif %}
+
         <table border="1">
             <tr><th>商品名</th><td>{{ item_info.name }}</td></tr>
             <tr><th>色</th><td>{{ item_info.color }}</td></tr>
@@ -30,7 +35,7 @@
                 <option value="{{ n }}">{{ n }}</option>
                 {% endfor %}
             </select>
-            <br><button type="submit">ショッピングカートに入れる</button>
+            <button type="submit">ショッピングカートに入れる</button>
         </form>
         {% else %}
         <p style="color:red;">現在在庫切れです。</p>

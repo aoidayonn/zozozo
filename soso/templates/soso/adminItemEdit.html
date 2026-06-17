@@ -10,8 +10,15 @@
     <div class="content">
         <h3>商品修正</h3>
 
+        {% if item.image %}
+        <p>現在の画像：</p>
+        <img src="{{ item.image.url }}" alt="{{ item.name }}" width="200">
+        {% else %}
+        <p>画像なし</p>
+        {% endif %}
+
         <div class="form">
-            <form action="/soso/adminItemEdit/{{ item_id }}/" method="POST">
+            <form action="/soso/adminItemEdit/{{ item_id }}/" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <table>
                     {{ form.as_table }}
