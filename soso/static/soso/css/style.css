@@ -1,90 +1,454 @@
-body {
-	font-family: 'Meiryo';
-	background-color: #fcfcfc;
+/* ============================================
+   ZOZOTOWN風 統一CSS
+   ============================================ */
+
+/* ── Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+/* ============================================
+   リセット & ベース
+   ============================================ */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
+html {
+    font-size: 62.5%;           /* 1rem = 10px */
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Noto Sans JP', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #222;
+    background-color: #f5f5f5;
+    line-height: 1.8;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   メインコンテンツ (.content)
+   ============================================ */
 .content {
-    margin: auto;
-	width: 70%;
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 40px 48px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* ============================================
+   見出し
+   ============================================ */
+h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 24px;
+    letter-spacing: 0.04em;
 }
 
 h3 {
-	text-align: center;
+    font-size: 2.0rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #111;
+    letter-spacing: 0.04em;
 }
 
-.form, .article, .error {
-	background-color: #ffffff;
-	border: solid 1px #eeeeee;
-    padding: 10px;
-	margin-bottom: 10px;
+h4 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: #333;
+    margin-top: 28px;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    border-left: 4px solid #111;
 }
 
-.error {
-	color: red;
-	background-color: #fbf2f2;
-	border: 1px solid red;
+/* ============================================
+   フォーム (.form)
+   ============================================ */
+.form {
+    margin: 20px 0;
 }
 
-.comment {
-	border-top: 1px dashed gray;
-	margin: 20px 0 20px 20px;
-	padding: 20px 0;
+form {
+    margin: 0;
 }
 
-.comment_form {
-	margin: 20px 0 20px 20px;
+/* ── テキスト入力 / パスワード / セレクト ── */
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
+    font-family: inherit;
+    font-size: 1.4rem;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fafafa;
+    color: #222;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    min-width: 220px;
 }
 
-.form form {
-	text-align: center;
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+select:focus {
+    border-color: #111;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
+    background: #fff;
 }
 
-.delete_form {
-	text-align: right;
+/* ── チェックボックス ── */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: #111;
+    cursor: pointer;
 }
 
-input, textarea {
-	border: 1px solid #666666;
-	width: 300px;
-	padding: 10px;
+/* ── 読み取り専用 ── */
+input[readonly] {
+    background: #eee;
+    color: #666;
+    cursor: default;
 }
 
-input[type=submit] {
-	color: #ffffff;
-	width: 100px;
+input[disabled] {
+    background: #eee;
+    color: #999;
+    cursor: not-allowed;
 }
 
-input[type=password] {
-	width: 150px;
+/* ============================================
+   ボタン
+   ============================================ */
+input[type="submit"],
+button[type="submit"] {
+    font-family: inherit;
+    font-size: 1.4rem;
+    font-weight: 700;
+    padding: 12px 36px;
+    margin-top: 16px;
+    color: #fff;
+    background-color: #111;
+    border: 2px solid #111;
+    border-radius: 4px;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: background-color 0.2s, color 0.2s;
 }
 
-.form input[type=submit] {
-	border: 1px solid #60ccb7;
-	background-color: #60ccb7;
-	margin: 10px;
-}
-.form input[type=submit]:hover {
-	color: #60ccb7;
-	background-color: #ffffff;
+input[type="submit"]:hover,
+button[type="submit"]:hover {
+    background-color: #fff;
+    color: #111;
 }
 
-.article_content input[type=submit], .comment input[type=submit]:hover {
-	color: #ffffff;
-	border: 1px solid #63a5c9;
-	background-color: #63a5c9;
-}
-.article_content input[type=submit]:hover, .comment input[type=submit] {
-	color: #63a5c9;
-	border: 1px solid #63a5c9;
-	background-color: #ffffff;
+/* ── 削除・キャンセル系ボタン ── */
+button.btn-danger {
+    background-color: #c0392b;
+    border-color: #c0392b;
 }
 
-.comment_form input[type=submit] {
-	border: 1px solid #f9aa33;
-	background-color: #f9aa33;
-    margin: 10px;
+button.btn-danger:hover {
+    background-color: #fff;
+    color: #c0392b;
 }
-.comment_form input[type=submit]:hover {
-	color: #f9aa33;
-	background-color: #ffffff;
+
+/* ============================================
+   テーブル
+   ============================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 1.4rem;
+}
+
+table[border="1"] {
+    border: none;
+}
+
+th, td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+th {
+    font-weight: 700;
+    color: #111;
+    background-color: #f9f9f9;
+    white-space: nowrap;
+}
+
+/* テーブルのヘッダー行 */
+table tr:first-child th {
+    background-color: #111;
+    color: #fff;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+}
+
+/* テーブルのストライプ */
+table tr:nth-child(even) {
+    background-color: #fafafa;
+}
+
+/* テーブル行ホバー */
+table tr:hover {
+    background-color: #f0f0f0;
+}
+
+/* 情報表示用テーブル（2列：th + td） */
+table tr th:first-child {
+    width: 160px;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* ── フォーム内テーブル（as_table用） ── */
+.form table tr:first-child th {
+    background-color: transparent;
+    color: #333;
+}
+
+.form table th {
+    background-color: transparent;
+    color: #333;
+    font-weight: 500;
+    padding-right: 16px;
+    vertical-align: middle;
+}
+
+.form table td {
+    padding: 8px 0;
+}
+
+.form table tr:hover {
+    background-color: transparent;
+}
+
+/* ============================================
+   リンク
+   ============================================ */
+a {
+    color: #111;
+    text-decoration: none;
+    font-weight: 500;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s, opacity 0.2s;
+}
+
+a:hover {
+    border-bottom-color: #111;
+    opacity: 0.7;
+}
+
+/* ── ナビゲーション風リンク ── */
+.content > a,
+.content > br + a {
+    display: inline-block;
+    margin: 4px 0;
+    padding: 4px 0;
+    font-size: 1.4rem;
+}
+
+/* ── 戻るリンク（ページ下部） ── */
+a[href*="main"],
+a[href*="top_page"],
+a[href*="admin_top"],
+a[href*="item_list"] {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 8px 0;
+    color: #555;
+    font-size: 1.3rem;
+}
+
+a[href*="main"]::before,
+a[href*="top_page"]::before,
+a[href*="admin_top"]::before,
+a[href*="item_list"]::before {
+    content: "← ";
+}
+
+/* ============================================
+   エラーメッセージ
+   ============================================ */
+p[style*="color:red"],
+.error-message {
+    color: #c0392b !important;
+    font-size: 1.3rem;
+    font-weight: 500;
+    background: #fdf0ef;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 10px 16px;
+    margin-bottom: 16px;
+}
+
+ul[style*="color:red"],
+.error-list {
+    color: #c0392b !important;
+    font-size: 1.3rem;
+    font-weight: 500;
+    background: #fdf0ef;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    padding: 10px 16px 10px 32px;
+    margin-bottom: 16px;
+    list-style: disc inside;
+}
+
+ul[style*="color:red"] li,
+.error-list li {
+    margin: 4px 0;
+}
+
+/* Django form field errors */
+.errorlist {
+    color: #c0392b;
+    font-size: 1.2rem;
+    font-weight: 400;
+    list-style: none;
+    padding: 0;
+    margin: 4px 0 0 0;
+}
+
+.errorlist li {
+    margin: 2px 0;
+}
+
+/* ============================================
+   ステータス表示
+   ============================================ */
+span[style*="color:red"] {
+    color: #c0392b !important;
+    font-weight: 700;
+}
+
+/* ── おすすめマーク ── */
+td:has(+ td) {
+    vertical-align: middle;
+}
+
+/* ============================================
+   合計金額
+   ============================================ */
+strong {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111;
+}
+
+/* ============================================
+   ウェルカムメッセージ
+   ============================================ */
+p:has(+ a),
+.content > p {
+    font-size: 1.4rem;
+    color: #444;
+    margin: 8px 0;
+}
+
+/* ============================================
+   検索フォーム（横並び）
+   ============================================ */
+form[style*="display:flex"] {
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 16px 20px;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+}
+
+form[style*="display:flex"] select,
+form[style*="display:flex"] input[type="text"] {
+    min-width: 160px;
+}
+
+form[style*="display:flex"] button {
+    margin-top: 0;
+    padding: 10px 24px;
+}
+
+/* ============================================
+   管理者メニュー
+   ============================================ */
+h4 + a {
+    display: inline-block;
+    margin: 4px 0;
+}
+
+/* ============================================
+   レスポンシブ
+   ============================================ */
+@media screen and (max-width: 768px) {
+    .content {
+        margin: 16px;
+        padding: 24px 20px;
+    }
+
+    h3 {
+        font-size: 1.8rem;
+    }
+
+    table {
+        font-size: 1.2rem;
+    }
+
+    th, td {
+        padding: 8px 10px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="number"],
+    select {
+        min-width: 100%;
+    }
+
+    form[style*="display:flex"] {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    input[type="submit"],
+    button[type="submit"] {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .content {
+        margin: 8px;
+        padding: 16px 12px;
+    }
+
+    h3 {
+        font-size: 1.6rem;
+    }
+
+    /* テーブルの横スクロール */
+    .table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
 }
