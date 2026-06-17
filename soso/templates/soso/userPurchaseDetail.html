@@ -1,13 +1,9 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>購入履歴詳細</title>
-    <script src="{% static 'soso/js/main.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-</head>
-<body>
+
+{% block title %}購入履歴詳細{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>購入履歴詳細</h3>
 
@@ -58,5 +54,4 @@
 
         <a href="{% url 'soso:user_purchase_history' %}">購入履歴一覧に戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

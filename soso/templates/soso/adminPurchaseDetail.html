@@ -1,13 +1,9 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>購入詳細</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-    <script src="{% static 'soso/js/main.js' %}"></script>
-</head>
-<body>
+
+{% block title %}購入詳細{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>購入詳細</h3>
 
@@ -62,5 +58,4 @@
         <a href="{% url 'soso:admin_purchase_search' %}">検索に戻る</a><br>
         <a href="{% url 'soso:admin_top' %}">管理者メニューに戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

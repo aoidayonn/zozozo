@@ -1,28 +1,20 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SOSO</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
-    <script src="{% static 'soso/js/main.js' %}"></script>
-</head>
-<body>
 
+{% block title %}SOSO - ホーム{% endblock %}
 
-    <!-- ========== スプラッシュ画面 ========== -->
+{% block content %}
+
+    <!-- スプラッシュ画面（main.htmlだけの要素） -->
     <div class="splash" id="splash">
         <div class="splash-title">SOSO CITY</div>
         <div class="splash-subtitle">How Are You Today</div>
         <div class="splash-line"></div>
     </div>
 
-    <!-- ========== メインコンテンツ ========== -->
     <div class="main-content">
         <div class="content">
 
-            <!-- ヘッダー -->
             {% if user_info %}
                 <p>ようこそ、{{ user_info.name }}さん。</p>
             {% endif %}
@@ -94,5 +86,4 @@
         </div>
     </div>
 
-</body>
-</html>
+{% endblock %}

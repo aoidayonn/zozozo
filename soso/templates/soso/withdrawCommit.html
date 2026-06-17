@@ -1,17 +1,12 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>退会完了</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-    <script src="{% static 'soso/js/main.js' %}"></script>
-</head>
-<body>
+
+{% block title %}退会完了{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>退会が完了しました。</h3>
         <p>{{ name }}さん、ご利用ありがとうございました。</p>
         <a href="{% url 'soso:user_login' %}">ログイン画面へ</a>
     </div>
-</body>
-</html>
+    {% endblock %}

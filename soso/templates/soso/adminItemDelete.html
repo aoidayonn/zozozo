@@ -1,13 +1,11 @@
+
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>商品削除確認</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-    <script src="{% static 'soso/js/main.js' %}"></script>
-</head>
-<body>
+
+{% block title %}商品削除確認{% endblock %}
+
+{% block content %}
+
     <div class="content">
         <h3>以下の商品を削除しますか？</h3>
 
@@ -28,5 +26,5 @@
         <br>
         <a href="{% url 'soso:admin_item_list' %}">商品一覧に戻る</a>
     </div>
-</body>
-</html>
+
+{% endblock %}

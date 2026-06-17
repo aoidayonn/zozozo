@@ -1,13 +1,9 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>会員登録確認</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-    <script src="{% static 'soso/js/main.js' %}"></script>
-</head>
-<body>
+
+{% block title %}登録確認{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>以下の内容で登録します。よろしいですか？</h3>
 
@@ -35,5 +31,4 @@
         <br>
         <a href="{% url 'soso:user_create' %}">入力画面に戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

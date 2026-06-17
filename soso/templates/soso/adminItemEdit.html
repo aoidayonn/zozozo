@@ -1,13 +1,9 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>商品修正</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-    <script src="{% static 'soso/js/main.js' %}"></script>
-</head>
-<body>
+
+{% block title %}商品修正{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>商品修正</h3>
 
@@ -33,3 +29,4 @@
     </div>
 </body>
 </html>
+{% endblock %}

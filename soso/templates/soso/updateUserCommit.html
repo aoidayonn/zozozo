@@ -1,13 +1,9 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8" />
-    <title>会員情報変更完了</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-    <script src="{% static 'soso/js/main.js' %}"></script>
-</head>
-<body>
+
+{% block title %}会員情報変更完了{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>会員情報の変更が完了しました。</h3>
 
@@ -21,5 +17,4 @@
         <br>
         <a href="{% url 'soso:top_page' %}">商品検索に戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}

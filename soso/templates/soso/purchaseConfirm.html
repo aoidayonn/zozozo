@@ -1,14 +1,9 @@
+{% extends "soso/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>購入確認</title>
 
-    <script src="{% static 'soso/js/main.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/style.css' %}" />
-</head>
-<body>
+{% block title %}購入確認画面{% endblock %}
+
+{% block content %}
     <div class="content">
         <h3>購入確認画面</h3>
 
@@ -47,5 +42,4 @@
         <br>
         <a href="{% url 'soso:shopping_cart' %}">カートに戻る</a>
     </div>
-</body>
-</html>
+    {% endblock %}
