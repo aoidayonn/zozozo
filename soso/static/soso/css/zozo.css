@@ -553,3 +553,93 @@ h4 + a {
     border-radius: 4px;
     margin-bottom: 16px;
 }
+
+/* ============================================
+   スプラッシュ（ZOZO風シンプル版）
+   ============================================ */
+
+/* 全画面 */
+.splash {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 9999;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    animation: splashFadeOut 0.6s ease 2.0s forwards;
+}
+
+/* タイトル */
+.splash-title {
+    font-size: 6.0rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #111;
+
+    opacity: 0;
+    transform: scale(0.9);
+    animation: splashTitleIn 0.6s ease 0.2s forwards;
+}
+
+/* サブタイトル */
+.splash-subtitle {
+    font-size: 1.4rem;
+    color: #777;
+    letter-spacing: 0.2em;
+    margin-top: 16px;
+
+    opacity: 0;
+    animation: splashSubIn 0.5s ease 0.8s forwards;
+}
+
+/* ライン */
+.splash-line {
+    width: 60px;
+    height: 2px;
+    background: #111;
+    margin-top: 16px;
+
+    opacity: 0;
+    transform: scaleX(0);
+    animation: splashLineIn 0.4s ease 1.2s forwards;
+}
+
+/* メイン */
+.main-content {
+    opacity: 0;
+    animation: mainFadeIn 0.5s ease 2.3s forwards;
+}
+
+/* アニメーション */
+@keyframes splashTitleIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes splashSubIn {
+    to { opacity: 1; }
+}
+
+@keyframes splashLineIn {
+    to {
+        opacity: 1;
+        transform: scaleX(1);
+    }
+}
+
+@keyframes splashFadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
+@keyframes mainFadeIn {
+    to { opacity: 1; }
+}
