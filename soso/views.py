@@ -4,7 +4,9 @@ from django.views.generic import View
 
 from soso.models import AccountUser, ShoppingItem, ShoppingItemsincart
 from soso.forms import UserLoginForm, UserCreateForm, UserUpdateForm, SearchForm
-
+from django.db.models import Avg
+from soso.models import ShoppingReview
+from soso.forms import ReviewForm
 
 # ──────────────────────────────────────
 # ログイン中のユーザーを取得
@@ -224,9 +226,26 @@ class ItemDetail(View):
     def get(self, request, item_id):
         item_info = ShoppingItem.objects.get(item_id=item_id)
         numbers = range(1, item_info.stock + 1)
+
+        
+        reviews = ShoppingReview.objects.filter(item=item_info).order_by("-created_at")
+        avg_rating = reviews.aggregate(Avg("rating"))["rating__avg"]
+        user = get_login_user(request)
+        already_reviewed = False
+        if user:
+            already_reviewed = ShoppingReview.objects.filter(item=item_info, user=user).exists()
+        form = ReviewForm()
+    
+
         return render(request, "soso/itemDetail.html", {
             "item_info": item_info,
-            "numbers": numbers,
+            "numbers": numbers,    
+            "reviews": reviews,
+            "avg_rating": avg_rating,
+            "form": form,
+            "already_reviewed": already_reviewed,
+            "user_info": user,
+        
         })
 
 
@@ -573,3 +592,38 @@ class AdminPurchaseCancel(View):
         purchase.save()
 
         return redirect("soso:admin_purchase_detail", purchase_id=purchase_id)
+
+class ReviewCreate(View):
+    def post(self, request, item_id):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        item = ShoppingItem.objects.get(item_id=item_id)
+
+        if ShoppingReview.objects.filter(item=item, user=user).exists():
+            return redirect("soso:item_detail", item_id=item_id)
+
+        form = ReviewForm(request.POST)
+
+        if not form.is_valid():
+            reviews = ShoppingReview.objects.filter(item=item).order_by("-created_at")
+            avg_rating = reviews.aggregate(Avg("rating"))["rating__avg"]
+            numbers = range(1, item.stock + 1)
+            return render(request, "soso/itemDetail.html", {
+                "item_info": item,
+                "numbers": numbers,
+                "reviews": reviews,
+                "avg_rating": avg_rating,
+                "form": form,
+                "already_reviewed": False,
+                "user_info": user,
+            })
+
+        ShoppingReview.objects.create(
+            item=item,
+            user=user,
+            rating=form.cleaned_data["rating"],
+            comment=form.cleaned_data["comment"],
+        )
+        return redirect("soso:item_detail", item_id=item_id)

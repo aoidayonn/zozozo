@@ -36,4 +36,6 @@ urlpatterns = [
     path("adminPurchaseSearch/", views.AdminPurchaseSearch.as_view(), name="admin_purchase_search"),
     path("adminPurchaseDetail/<int:purchase_id>/", views.AdminPurchaseDetail.as_view(), name="admin_purchase_detail"),
     path("adminPurchaseCancel/<int:purchase_id>/", views.AdminPurchaseCancel.as_view(), name="admin_purchase_cancel"),
+
+    path("review/<int:item_id>/", views.ReviewCreate.as_view(), name="review_create"),
 ]

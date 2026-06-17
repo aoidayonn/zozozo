@@ -189,3 +189,19 @@ class PurchaseSearchForm(forms.Form):
 
     user_id = forms.CharField(label="会員ID:", max_length=128, required=False)
     purchase_id = forms.IntegerField(label="注文ID:", required=False)
+
+    
+class ReviewForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    rating = forms.ChoiceField(
+        label="評価:",
+        choices=[(i, f"★{i}") for i in range(1, 6)],
+    )
+    comment = forms.CharField(
+        label="コメント:",
+        max_length=500,
+        widget=forms.Textarea(attrs={"rows": 3}),
+    )
