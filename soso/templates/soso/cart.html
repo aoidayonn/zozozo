@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>ショッピングカート</title>
 </head>
 <body>
@@ -16,20 +16,53 @@
                 <th>メーカー</th>
                 <th>単価</th>
                 <th>数量</th>
+                <th>操作</th>
             </tr>
+
             {% for cart_item in cart_items %}
             <tr>
                 <td>{{ cart_item.item.name }}</td>
                 <td>{{ cart_item.item.color }}</td>
                 <td>{{ cart_item.item.manufacturer }}</td>
                 <td>{{ cart_item.item.price }}円</td>
-                <td>{{ cart_item.amount }}</td>
+
+                <!-- ✅ 数量変更 -->
+                <td>
+                    <form method="post" action="{% url 'soso:cart_update' cart_item.id %}">
+                        {% csrf_token %}
+                        <select name="amount">
+                            {% for i in cart_item.amount_choices %}
+                                <option value="{{ i }}"
+                                {% if i == cart_item.amount %}selected{% endif %}>
+                                    {{ i }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit">更新</button>
+                    </form>
+                </td>
+
+                <!-- ✅ 削除 -->
+                <td>
+                    <form method="post" action="{% url 'soso:cart_delete' cart_item.id %}">
+                        {% csrf_token %}
+                        <button type="submit">削除</button>
+                    </form>
+                </td>
+
             </tr>
             {% endfor %}
         </table>
 
         <br>
         <p><strong>合計 {{ total }}円</strong></p>
+
+        <!-- ✅ 購入画面へ -->
+        <p>
+            <a href="{% url 'soso:purchase' %}">
+                <button>購入画面へ進む</button>
+            </a>
+        </p>
 
         {% else %}
         <p>カートに商品がありません。</p>

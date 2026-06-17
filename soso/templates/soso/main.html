@@ -23,6 +23,7 @@
 
         <br>
             <a href="{% url 'soso:shopping_cart' %}">ショッピングカートを見る</a><br><br>
+            <a href="{% url 'soso:user_purchase_history' %}">購入履歴</a><br><br>
 
 		{% if user_info %}
             ようこそ{{ user_info.name }}さん<br>

@@ -107,8 +107,24 @@ class SearchForm(forms.Form):
         max_length=128,
         required=False,
     )
+
+# ──────────────────────────────────────
+# 購入用フォーム
+# ──────────────────────────────────────
+class PurchaseForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.label_suffix = ""
+
+    destination = forms.CharField(label="配送先住所", max_length=256, required=False)
+
+    payment_method = forms.ChoiceField(
+        label="精算方法",
+        choices=[("cod", "代金引換")],
+        initial="cod"
+    )
     
-    
+
 class AdminLoginForm(forms.Form):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

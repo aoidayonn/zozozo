@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>購入履歴詳細</title>
+</head>
+<body>
+    <h3>購入履歴詳細</h3>
+
+    <p>注文ID：{{ purchase.purchase_id }}</p>
+    <p>注文日：{{ purchase.booked_date }}</p>
+    <p>配送先：{{ purchase.destination }}</p>
+    <p>キャンセル：
+        {% if purchase.cancel %}
+            済
+        {% else %}
+            未
+        {% endif %}
+    </p>
+
+    <table border="1">
+        <tr>
+            <th>商品名</th>
+            <th>単価</th>
+            <th>数量</th>
+            <th>小計</th>
+        </tr>
+
+        {% for detail in details %}
+        <tr>
+            <td>{{ detail.item.name }}</td>
+            <td>{{ detail.item.price }}円</td>
+            <td>{{ detail.amount }}</td>
+            <td>{{ detail.subtotal }}円</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p><strong>合計金額：{{ total }}円</strong></p>
+
+    <br>
+    <a href="{% url 'soso:user_purchase_history' %}">購入履歴一覧に戻る</a>
+</body>
+</html>

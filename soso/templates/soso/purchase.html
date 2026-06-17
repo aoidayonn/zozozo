@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>購入画面</title>
+</head>
+<body>
+    <h2>購入画面</h2>
+    <table border="1">
+        <tr>
+            <th>商品名</th>
+            <th>価格</th>
+            <th>数量</th>
+            <th>小計</th>
+        </tr>
+
+    {% for ci in cart_items %}
+        <tr>
+            <td>{{ ci.item.name }}</td>
+            <td>{{ ci.item.price }}円</td>
+            <td>{{ ci.amount }}</td>
+            <td>{{ ci.subtotal }}円</td>
+        </tr>
+    {% endfor %}
+    </table>
+
+    <p>合計金額：{{ total }}円</p>
+
+    <form method="post" action="{% url 'soso:purchase_confirm' %}">
+        {% csrf_token %}
+
+        <p>配送先住所：{{ form.destination }}</p>
+
+        <p>支払い方法：{{ form.payment_method }}</p>
+
+        <button type="submit">購入確認へ</button>
+        <p>
+            <a href="{% url 'soso:shopping_cart' %}">カートに戻る</a>
+        </p>
+    </form>
+</body>
+</html>
