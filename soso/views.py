@@ -913,3 +913,8 @@ class ReviewTimeline(View):
             "reviews": reviews,
         }
         return render(request, "soso/reviewTimeline.html", context)
+    
+    
+class NekoTetris(View):
+    def get(self, request):
+        return render(request, "soso/nekoTetris.html")

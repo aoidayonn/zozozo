@@ -47,4 +47,6 @@ urlpatterns = [
 
     path("review/<int:item_id>/", views.ReviewCreate.as_view(), name="review_create"),
     path("reviews/", views.ReviewTimeline.as_view(), name="review_timeline"),
+    
+    path("tetris/", views.NekoTetris.as_view(), name="neko_tetris"),
 ]
