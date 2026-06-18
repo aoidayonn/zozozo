@@ -918,3 +918,15 @@ class ReviewTimeline(View):
 class NekoTetris(View):
     def get(self, request):
         return render(request, "soso/nekoTetris.html")
+    
+
+class TetrisLobby(View):
+    def get(self, request):
+        return render(request, "soso/tetrisLobby.html")
+
+
+class TetrisVs(View):
+    def get(self, request, room_name):
+        return render(request, "soso/tetrisVs.html", {
+            "room_name": room_name,
+        })

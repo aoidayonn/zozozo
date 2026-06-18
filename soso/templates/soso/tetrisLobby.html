@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>🎮 ねこテトリス対戦ロビー</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+</head>
+<body>
+    <div class="content">
+        <h3>🎮 ねこテトリス対戦</h3>
+        <p>合言葉を決めて、友達と同じ合言葉で入室すれば対戦できます！</p>
+
+        <div class="form">
+            <table>
+                <tr>
+                    <th>合言葉:</th>
+                    <td>
+                        <input type="text" id="room-input" placeholder="例: neko123" maxlength="20">
+                    </td>
+                </tr>
+            </table>
+            <button type="button" onclick="enterRoom()">入室する</button>
+        </div>
+
+        <br>
+        <a href="{% url 'soso:top_page' %}">トップページ</a>
+    </div>
+
+    <script>
+        function enterRoom() {
+            var roomName = document.getElementById("room-input").value.trim();
+            if (!roomName) {
+                alert("合言葉を入力してください");
+                return;
+            }
+            // 英数字のみに制限
+            if (!/^[a-zA-Z0-9_]+$/.test(roomName)) {
+                alert("合言葉は英数字とアンダースコアのみ使えます");
+                return;
+            }
+            window.location.href = "/soso/vs/" + roomName + "/";
+        }
+
+        document.getElementById("room-input").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") enterRoom();
+        });
+    </script>
+</body>
+</html>
