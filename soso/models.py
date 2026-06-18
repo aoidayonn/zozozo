@@ -164,3 +164,14 @@ class TetrisGachaHistory(models.Model):
     rarity = models.CharField(verbose_name="レア度", max_length=20)
     discount_rate = models.IntegerField(verbose_name="割引率")
     drawn_at = models.DateTimeField(auto_now_add=True)
+    
+class SlotHistory(models.Model):
+    class Meta:
+        db_table = "slot_history"
+
+    history_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AccountUser, on_delete=models.CASCADE)
+    bet = models.IntegerField(verbose_name="ベット額")
+    payout = models.IntegerField(verbose_name="払戻額")
+    result = models.CharField(verbose_name="結果", max_length=50)
+    played_at = models.DateTimeField(auto_now_add=True)

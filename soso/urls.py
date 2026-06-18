@@ -59,4 +59,7 @@ urlpatterns = [
     path("tetris/win/", views.TetrisWin.as_view(), name="tetris_win"),
     path("tetrisGacha/", views.TetrisGachaPage.as_view(), name="tetris_gacha_page"),
     path("tetrisGachaDraw/", views.TetrisGachaDraw.as_view(), name="tetris_gacha_draw"),
+    
+    path("slot/", views.SlotPage.as_view(), name="slot_page"),
+    path("slot/play/", views.SlotPlay.as_view(), name="slot_play"),
 ]

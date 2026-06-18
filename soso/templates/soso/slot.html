@@ -1,0 +1,377 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>🎰 ねこスロット</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+    <style>
+        .slot-machine {
+            background: linear-gradient(135deg, #c0392b 0%, #8e44ad 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px auto;
+            max-width: 600px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .points-display {
+            background: rgba(0,0,0,0.5);
+            color: gold;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: inline-block;
+        }
+
+        .reels {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin: 24px 0;
+        }
+
+        .reel {
+            width: 120px;
+            height: 120px;
+            background: #fff;
+            border: 4px solid gold;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .reel.spinning {
+            animation: shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .result-display {
+            color: #fff;
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 16px 0;
+            min-height: 50px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .result-display.win {
+            color: gold;
+            animation: pulse 0.5s ease;
+        }
+
+        .result-display.lose {
+            color: #ddd;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        .bet-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .bet-btn {
+            padding: 10px 24px;
+            border-radius: 980px;
+            border: 2px solid #fff;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            font-size: 1.4rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .bet-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .bet-btn.active {
+            background: gold;
+            color: #111;
+            border-color: gold;
+        }
+
+        .spin-btn {
+            padding: 18px 60px;
+            font-size: 2rem;
+            font-weight: 900;
+            background: gold;
+            color: #111;
+            border: 4px solid #fff;
+            border-radius: 980px;
+            cursor: pointer;
+            margin-top: 16px;
+            box-shadow: 0 4px 20px rgba(255,215,0,0.5);
+            transition: all 0.2s;
+            letter-spacing: 0.1em;
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255,215,0,0.7);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .payout-table {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .payout-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payout-table th,
+        .payout-table td {
+            padding: 8px 12px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-list {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .history-list table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.3rem;
+        }
+
+        .history-list .win { color: #27ae60; font-weight: 700; }
+        .history-list .lose { color: #c0392b; }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h2>🎰 ねこスロット</h2>
+        <p>テトリスポイントを賭けて、大当たりを狙おう！</p>
+
+        <!-- スロットマシン -->
+        <div class="slot-machine">
+            <div class="points-display">
+                🎮 <span id="points">{{ points }}</span> pt
+            </div>
+
+            <div class="reels">
+                <div class="reel" id="reel1">❓</div>
+                <div class="reel" id="reel2">❓</div>
+                <div class="reel" id="reel3">❓</div>
+            </div>
+
+            <div class="result-display" id="result">スピンしてね！</div>
+
+            <div class="bet-controls">
+                <span style="color:#fff; font-weight:700; margin-right:8px;">ベット:</span>
+                <button class="bet-btn" data-bet="10" type="button">10pt</button>
+                <button class="bet-btn active" data-bet="50" type="button">50pt</button>
+                <button class="bet-btn" data-bet="100" type="button">100pt</button>
+            </div>
+
+            <button class="spin-btn" id="spin-btn" type="button" onclick="spin()">
+                🎰 SPIN 🎰
+            </button>
+        </div>
+
+        <!-- 配当表 -->
+        <div class="payout-table">
+            <h3 style="text-align:center; margin-top:0;">💰 配当表</h3>
+            <table>
+                <tr><th>組み合わせ</th><th>配当</th></tr>
+                <tr><td>💎 💎 💎</td><td><strong>x50</strong>（ジャックポット！）</td></tr>
+                <tr><td>⭐ ⭐ ⭐</td><td>x20</td></tr>
+                <tr><td>🐱 🐱 🐱</td><td>x10</td></tr>
+                <tr><td>🐈 🐈 🐈</td><td>x8</td></tr>
+                <tr><td>🐟 🐟 🐟</td><td>x5</td></tr>
+                <tr><td>🥛 🥛 🥛</td><td>x3</td></tr>
+                <tr><td>💎 ペア</td><td>x5</td></tr>
+                <tr><td>⭐ ペア</td><td>x3</td></tr>
+                <tr><td>その他 ペア</td><td>x2</td></tr>
+            </table>
+        </div>
+
+        <!-- 履歴 -->
+        {% if history %}
+        <div class="history-list">
+            <h3 style="text-align:center; margin-top:0;">📜 最近の結果</h3>
+            <table>
+                <tr>
+                    <th>日時</th>
+                    <th>ベット</th>
+                    <th>結果</th>
+                    <th>払戻</th>
+                </tr>
+                {% for h in history %}
+                <tr>
+                    <td>{{ h.played_at|date:"m/d H:i" }}</td>
+                    <td>{{ h.bet }}pt</td>
+                    <td>{{ h.result }}</td>
+                    <td class="{% if h.payout > 0 %}win{% else %}lose{% endif %}">
+                        {% if h.payout > 0 %}+{% endif %}{{ h.payout }}pt
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'soso:tetris_lobby' %}">🎮 テトリスでポイントを稼ぐ</a> |
+        <a href="{% url 'soso:tetris_gacha_page' %}">🎰 テトリスガチャ</a> |
+        <a href="{% url 'soso:top_page' %}">トップに戻る</a>
+    </div>
+
+    <script>
+        var SYMBOLS = ["🐱", "🐈", "🐟", "🥛", "⭐", "💎"];
+        var currentBet = 50;
+        var spinning = false;
+
+        /* ベットボタン切替 */
+        var betBtns = document.querySelectorAll(".bet-btn");
+        betBtns.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                if (spinning) return;
+                betBtns.forEach(function(b) { b.classList.remove("active"); });
+                this.classList.add("active");
+                currentBet = parseInt(this.getAttribute("data-bet"));
+            });
+        });
+
+        /* CSRFトークン取得 */
+        function getCookie(name) {
+            var value = "; " + document.cookie;
+            var parts = value.split("; " + name + "=");
+            if (parts.length === 2) return parts.pop().split(";").shift();
+            return "";
+        }
+
+        /* スピン処理 */
+        function spin() {
+            if (spinning) return;
+
+            var currentPoints = parseInt(document.getElementById("points").textContent);
+            if (currentPoints < currentBet) {
+                alert("ポイントが足りません！テトリスで稼いでね🎮");
+                return;
+            }
+
+            spinning = true;
+            document.getElementById("spin-btn").disabled = true;
+            document.getElementById("result").textContent = "🎰 SPINNING...";
+            document.getElementById("result").className = "result-display";
+
+            /* リール回転アニメーション */
+            var reels = [
+                document.getElementById("reel1"),
+                document.getElementById("reel2"),
+                document.getElementById("reel3")
+            ];
+
+            reels.forEach(function(r) { r.classList.add("spinning"); });
+
+            /* ランダム表示でリール感を出す */
+            var spinIntervals = reels.map(function(reel) {
+                return setInterval(function() {
+                    reel.textContent = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
+                }, 80);
+            });
+
+            /* サーバーに結果を問い合わせ */
+            var formData = new FormData();
+            formData.append("bet", currentBet);
+
+            fetch("/soso/slot/play/", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: formData
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (!data.success) {
+                    alert(data.error || "エラーが発生しました");
+                    resetSpin(reels, spinIntervals);
+                    return;
+                }
+
+                /* リールを順番に停止 */
+                setTimeout(function() {
+                    clearInterval(spinIntervals[0]);
+                    reels[0].classList.remove("spinning");
+                    reels[0].textContent = data.reels[0];
+                }, 800);
+
+                setTimeout(function() {
+                    clearInterval(spinIntervals[1]);
+                    reels[1].classList.remove("spinning");
+                    reels[1].textContent = data.reels[1];
+                }, 1400);
+
+                setTimeout(function() {
+                    clearInterval(spinIntervals[2]);
+                    reels[2].classList.remove("spinning");
+                    reels[2].textContent = data.reels[2];
+
+                    /* 結果表示 */
+                    var resultEl = document.getElementById("result");
+                    if (data.payout > 0) {
+                        resultEl.textContent = data.result + " +" + data.payout + "pt!";
+                        resultEl.className = "result-display win";
+                    } else {
+                        resultEl.textContent = data.result;
+                        resultEl.className = "result-display lose";
+                    }
+
+                    /* ポイント更新 */
+                    document.getElementById("points").textContent = data.points;
+
+                    spinning = false;
+                    document.getElementById("spin-btn").disabled = false;
+                }, 2000);
+            })
+            .catch(function(err) {
+                alert("通信エラー: " + err);
+                resetSpin(reels, spinIntervals);
+            });
+        }
+
+        function resetSpin(reels, intervals) {
+            intervals.forEach(function(i) { clearInterval(i); });
+            reels.forEach(function(r) { r.classList.remove("spinning"); });
+            spinning = false;
+            document.getElementById("spin-btn").disabled = false;
+            document.getElementById("result").textContent = "スピンしてね！";
+            document.getElementById("result").className = "result-display";
+        }
+    </script>
+</body>
+</html>

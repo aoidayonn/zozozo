@@ -1155,3 +1155,132 @@ class TetrisGachaDraw(View):
             "coupon": coupon,
             "remaining_points": tp.points,
         })
+        
+        
+import random
+from django.http import JsonResponse
+from soso.models import TetrisPoint, SlotHistory
+
+
+# ──────────────────────────────────────
+# スロットページ
+# ──────────────────────────────────────
+class SlotPage(View):
+    def get(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        tp, _ = TetrisPoint.objects.get_or_create(user=user)
+
+        # 直近10件の履歴
+        history = SlotHistory.objects.filter(user=user).order_by("-played_at")[:10]
+
+        return render(request, "soso/slot.html", {
+            "user_info": user,
+            "points": tp.points,
+            "history": history,
+        })
+
+
+# ──────────────────────────────────────
+# スロット抽選API
+# ──────────────────────────────────────
+class SlotPlay(View):
+    SYMBOLS = ["🐱", "🐈", "🐟", "🥛", "⭐", "💎"]
+
+    # 払い戻し倍率
+    PAYOUTS = {
+        "💎💎💎": 50,    # ジャックポット
+        "⭐⭐⭐": 20,
+        "🐱🐱🐱": 10,
+        "🐈🐈🐈": 8,
+        "🐟🐟🐟": 5,
+        "🥛🥛🥛": 3,
+        # ペア（2つ揃い）
+        "pair_diamond": 5,
+        "pair_star": 3,
+        "pair_normal": 2,
+    }
+
+    def post(self, request):
+        user = get_login_user(request)
+        if not user:
+            return JsonResponse({"success": False, "error": "未ログイン"}, status=401)
+
+        try:
+            bet = int(request.POST.get("bet", 10))
+        except (TypeError, ValueError):
+            bet = 10
+
+        # ベット額のバリデーション
+        if bet not in [10, 50, 100]:
+            return JsonResponse({"success": False, "error": "不正なベット額"}, status=400)
+
+        tp, _ = TetrisPoint.objects.get_or_create(user=user)
+
+        if tp.points < bet:
+            return JsonResponse({"success": False, "error": "ポイント不足"}, status=400)
+
+        # ポイント消費
+        tp.points -= bet
+
+        # 抽選（3つのリール）
+        reel1 = random.choice(self.SYMBOLS)
+        reel2 = random.choice(self.SYMBOLS)
+        reel3 = random.choice(self.SYMBOLS)
+        reels = [reel1, reel2, reel3]
+
+        # 判定
+        payout, result = self._calculate_payout(reels, bet)
+
+        # ポイント加算
+        tp.points += payout
+        tp.save()
+
+        # 履歴記録
+        SlotHistory.objects.create(
+            user=user,
+            bet=bet,
+            payout=payout,
+            result=" ".join(reels) + " / " + result,
+        )
+
+        return JsonResponse({
+            "success": True,
+            "reels": reels,
+            "result": result,
+            "bet": bet,
+            "payout": payout,
+            "profit": payout - bet,
+            "points": tp.points,
+        })
+
+    def _calculate_payout(self, reels, bet):
+        r1, r2, r3 = reels
+
+        # 3つ揃い
+        if r1 == r2 == r3:
+            key = r1 * 3
+            if key in self.PAYOUTS:
+                multiplier = self.PAYOUTS[key]
+                return bet * multiplier, "🎉 大当たり！x" + str(multiplier)
+
+        # ペア（2つ揃い）
+        if r1 == r2 or r2 == r3 or r1 == r3:
+            # 揃ったシンボルを特定
+            if r1 == r2:
+                paired = r1
+            elif r2 == r3:
+                paired = r2
+            else:
+                paired = r1
+
+            if paired == "💎":
+                return bet * self.PAYOUTS["pair_diamond"], "✨ ダイヤペア！x5"
+            elif paired == "⭐":
+                return bet * self.PAYOUTS["pair_star"], "⭐ スターペア！x3"
+            else:
+                return bet * self.PAYOUTS["pair_normal"], "🎵 ペア！x2"
+
+        return 0, "😿 ハズレ"
