@@ -114,3 +114,31 @@ class ShoppingReview(models.Model):
     created_at = models.DateTimeField(verbose_name="投稿日", auto_now_add=True)
     item = models.ForeignKey(ShoppingItem, verbose_name="商品ID", on_delete=models.CASCADE)
     user = models.ForeignKey(AccountUser, verbose_name="会員ID", on_delete=models.CASCADE)
+
+import random
+import string
+from django.utils import timezone
+from datetime import timedelta
+
+
+class ShoppingCoupon(models.Model):
+    class Meta:
+        db_table = "shopping_coupon"
+
+    coupon_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AccountUser, on_delete=models.CASCADE)
+    code = models.CharField(verbose_name="クーポンコード", max_length=20, unique=True)
+    discount_rate = models.IntegerField(verbose_name="割引率(%)")
+    rarity = models.CharField(verbose_name="レア度", max_length=20)
+    expires_at = models.DateTimeField(verbose_name="有効期限")
+    used = models.BooleanField(verbose_name="使用済み", default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class GachaHistory(models.Model):
+    class Meta:
+        db_table = "gacha_history"
+
+    history_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AccountUser, on_delete=models.CASCADE)
+    drawn_at = models.DateTimeField(auto_now_add=True)
