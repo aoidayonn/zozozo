@@ -54,4 +54,9 @@ urlpatterns = [
     path("gacha/", views.GachaPage.as_view(), name="gacha_page"),
     path("gachaDraw/", views.GachaDraw.as_view(), name="gacha_draw"),
     path("myCoupons/", views.MyCoupons.as_view(), name="my_coupons"),
+
+    # ★ 追加：テトリスポイントガチャ
+    path("tetris/win/", views.TetrisWin.as_view(), name="tetris_win"),
+    path("tetrisGacha/", views.TetrisGachaPage.as_view(), name="tetris_gacha_page"),
+    path("tetrisGachaDraw/", views.TetrisGachaDraw.as_view(), name="tetris_gacha_draw"),
 ]

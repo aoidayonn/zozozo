@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>テトリスガチャ</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+</head>
+<body>
+    <div class="content">
+        <h2>🎮🎰 テトリスガチャ</h2>
+        <p>テトリス対戦で貯めたポイントでガチャが引けるよ！何回でもOK！</p>
+
+        <!-- ポイント表示ボックス -->
+        <div style="background: linear-gradient(135deg, #111 0%, #333 100%); color: #fff; padding: 24px; border-radius: 12px; margin: 20px 0; text-align: center; border: 2px solid gold;">
+            <p style="margin: 0; font-size: 1.4rem; opacity: 0.8;">所持ポイント</p>
+            <p style="margin: 8px 0; font-size: 4rem; font-weight: 700; color: gold;">
+                🎮 {{ points }} pt
+            </p>
+            <p style="margin: 0; font-size: 1.2rem; opacity: 0.7;">
+                テトリス対戦 通算 {{ total_wins }} 勝
+            </p>
+        </div>
+
+        <p>🎯 ガチャ1回 = <strong>{{ gacha_cost }}ポイント</strong></p>
+        <p>🏆 テトリス対戦で1勝すると <strong>100ポイント</strong> もらえる！</p>
+
+        <h3>確率（デイリーガチャより当たりやすい！）</h3>
+        <ul>
+            <li>💎ダイヤ（50%OFF）: <strong>3%</strong></li>
+            <li>🥇ゴールド（20%OFF）: <strong>12%</strong></li>
+            <li>🥈シルバー（10%OFF）: <strong>30%</strong></li>
+            <li>🥉ブロンズ（5%OFF）: <strong>55%</strong></li>
+        </ul>
+
+        {% if can_draw %}
+            <form action="{% url 'soso:tetris_gacha_draw' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="font-size: 20px; padding: 14px 40px; background: gold; color: #111; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">
+                    🎮 テトリスガチャを引く！(-{{ gacha_cost }}pt)
+                </button>
+            </form>
+        {% else %}
+            <p style="color:#c0392b; font-weight: 700;">
+                ⚠️ ポイントが足りません。テトリスで勝ってポイントを貯めよう！
+            </p>
+            <a href="{% url 'soso:tetris_lobby' %}">🎮 テトリス対戦に行く</a>
+        {% endif %}
+
+        <br><br>
+        <a href="{% url 'soso:gacha_page' %}">🎰 デイリーガチャはこちら</a> |
+        <a href="{% url 'soso:my_coupons' %}">マイクーポン一覧</a> |
+        <a href="{% url 'soso:top_page' %}">トップに戻る</a>
+    </div>
+</body>
+</html>
