@@ -243,8 +243,27 @@
         } else if (data.type === "game_over") {
             oppLost = true;
             if (!imLost) {
-                setStatus("🎉 勝利！相手が負けました", "win");
+                setStatus("🎉 勝利！", "win");
                 gameOver = true;
+
+                /* サーバーにポイント加算リクエスト */
+                fetch("/soso/tetris/win/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: JSON.stringify({})
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(d) {
+                    if (d.success) {
+                        showWinModal(d.points, d.total_wins);
+                    }
+                })
+                .catch(function(err) {
+                    console.error("通信エラー:", err);
+                });
             }
         } else if (data.type === "opponent_left") {
             setStatus("相手が退出しました", "waiting");
@@ -599,6 +618,35 @@
     drawBoard(oppCtx, oppCanvas, oppBoard, null);
     drawPreview(nextCtx, nextCanvas, null, false);
     drawPreview(holdCtx, holdCanvas, null, false);
+
+    /* CSRFトークン取得 */
+    function getCookie(name) {
+        var value = "; " + document.cookie;
+        var parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return "";
+    }
+
+    /* 勝利モーダル */
+    function showWinModal(points, wins) {
+        var modal = document.createElement("div");
+        modal.style.cssText =
+            "position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);" +
+            "background:#111; color:#fff; padding:40px 60px; border-radius:16px;" +
+            "text-align:center; z-index:99999; box-shadow:0 8px 40px rgba(0,0,0,0.5);" +
+            "border:3px solid gold; min-width:300px;";
+
+        modal.innerHTML =
+            '<h1 style="margin:0 0 16px 0; color:gold; font-size:3rem;">🏆 VICTORY!</h1>' +
+            '<p style="font-size:2rem; margin:8px 0; color:gold;">+100 pt 獲得！</p>' +
+            '<p style="font-size:1.4rem; margin:8px 0; opacity:0.8;">所持ポイント: ' + points + ' pt</p>' +
+            '<p style="font-size:1.2rem; margin:8px 0 24px 0; opacity:0.6;">通算 ' + wins + ' 勝</p>' +
+            '<a href="/soso/tetrisGacha/" style="display:inline-block; padding:14px 32px; background:gold; color:#111; border-radius:8px; font-weight:700; text-decoration:none; font-size:1.4rem;">🎮 テトリスガチャを引く！</a>' +
+            '<br><br>' +
+            '<a href="/soso/vs/" style="color:#fff; opacity:0.7; font-size:1.2rem;">もう一度対戦する</a>';
+
+        document.body.appendChild(modal);
+    }
 })();
 </script>
 </body>

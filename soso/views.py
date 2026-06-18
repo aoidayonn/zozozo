@@ -17,6 +17,7 @@ from soso.models import (
     ShoppingPurchasedetail,
     ShoppingCategory,
     AdministratorAdmin,
+    ShoppingCoupon, GachaHistory, TetrisPoint
 )
 
 from soso.forms import (
@@ -921,15 +922,31 @@ class NekoTetris(View):
     
 
 class TetrisLobby(View):
+    
     def get(self, request):
-        return render(request, "soso/tetrisLobby.html")
+        # ★ ログインチェック追加
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        return render(request, "soso/tetrisLobby.html", {
+            "user_info": user,
+        })
+
 
 
 class TetrisVs(View):
     def get(self, request, room_name):
+        # ★ ログインチェック追加
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
         return render(request, "soso/tetrisVs.html", {
             "room_name": room_name,
+            "user_info": user,
         })
+
 
 import random
 import string
@@ -1024,4 +1041,117 @@ class MyCoupons(View):
             "user_info": user,
             "coupons": coupons,
             "now": now,
+        })
+        
+        
+
+
+import random
+import string
+from datetime import timedelta
+from django.http import JsonResponse
+from django.utils import timezone
+
+from soso.models import (
+    # ... 既存 ...
+    ShoppingCoupon, GachaHistory, TetrisPoint, TetrisGachaHistory,
+)
+
+
+# ──────────────────────────────────────
+# テトリス勝利時のポイント加算API
+# ──────────────────────────────────────
+class TetrisWin(View):
+    def post(self, request):
+        user = get_login_user(request)
+        if not user:
+            return JsonResponse({"success": False, "error": "未ログイン"}, status=401)
+
+        tp, _ = TetrisPoint.objects.get_or_create(user=user)
+        tp.points += 100
+        tp.total_wins += 1
+        tp.save()
+
+        return JsonResponse({
+            "success": True,
+            "points": tp.points,
+            "total_wins": tp.total_wins,
+            "added": 100,
+        })
+
+
+# ──────────────────────────────────────
+# テトリスガチャページ
+# ──────────────────────────────────────
+class TetrisGachaPage(View):
+    def get(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        tp, _ = TetrisPoint.objects.get_or_create(user=user)
+        gacha_cost = 100
+        can_draw = tp.points >= gacha_cost
+
+        return render(request, "soso/tetrisGacha.html", {
+            "user_info": user,
+            "points": tp.points,
+            "total_wins": tp.total_wins,
+            "gacha_cost": gacha_cost,
+            "can_draw": can_draw,
+        })
+
+
+# ──────────────────────────────────────
+# テトリスガチャ抽選
+# ──────────────────────────────────────
+class TetrisGachaDraw(View):
+    def post(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        gacha_cost = 100
+        tp, _ = TetrisPoint.objects.get_or_create(user=user)
+
+        if tp.points < gacha_cost:
+            return redirect("soso:tetris_gacha_page")
+
+        # ポイント消費
+        tp.points -= gacha_cost
+        tp.save()
+
+        # 抽選（デイリーガチャより少し豪華に！）
+        roll = random.randint(0, 99)
+        if roll < 3:
+            rarity, discount = "💎ダイヤ", 50
+        elif roll < 15:
+            rarity, discount = "🥇ゴールド", 20
+        elif roll < 45:
+            rarity, discount = "🥈シルバー", 10
+        else:
+            rarity, discount = "🥉ブロンズ", 5
+
+        code = "T" + "".join(random.choices(string.ascii_uppercase + string.digits, k=7))
+        expires_at = timezone.now() + timedelta(days=7)
+
+        coupon = ShoppingCoupon.objects.create(
+            user=user,
+            code=code,
+            discount_rate=discount,
+            rarity=rarity,
+            expires_at=expires_at,
+        )
+
+        # テトリスガチャ専用履歴
+        TetrisGachaHistory.objects.create(
+            user=user,
+            rarity=rarity,
+            discount_rate=discount,
+        )
+
+        return render(request, "soso/tetrisGachaResult.html", {
+            "user_info": user,
+            "coupon": coupon,
+            "remaining_points": tp.points,
         })

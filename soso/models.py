@@ -142,3 +142,25 @@ class GachaHistory(models.Model):
     history_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(AccountUser, on_delete=models.CASCADE)
     drawn_at = models.DateTimeField(auto_now_add=True)
+    
+    
+class TetrisPoint(models.Model):
+    class Meta:
+        db_table = "tetris_point"
+
+    user = models.OneToOneField(AccountUser, on_delete=models.CASCADE, primary_key=True)
+    points = models.IntegerField(verbose_name="所持ポイント", default=0)
+    total_wins = models.IntegerField(verbose_name="勝利数", default=0)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+# ★ テトリスガチャ専用の履歴（無制限に引ける）
+class TetrisGachaHistory(models.Model):
+    class Meta:
+        db_table = "tetris_gacha_history"
+
+    history_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(AccountUser, on_delete=models.CASCADE)
+    rarity = models.CharField(verbose_name="レア度", max_length=20)
+    discount_rate = models.IntegerField(verbose_name="割引率")
+    drawn_at = models.DateTimeField(auto_now_add=True)
