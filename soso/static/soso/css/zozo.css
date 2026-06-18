@@ -699,7 +699,7 @@ h4 + a {
     border-bottom: 2px solid #fff;
 }
 
-/* ========== ハンバーガーメニュー（モバイル） ========== */
+/* ========== ハンバーガーメニュー（モバイル） ==========
 .hamburger {
     display: none;
     flex-direction: column;
@@ -715,7 +715,7 @@ h4 + a {
     background: #fff;
     border-radius: 2px;
     transition: 0.3s;
-}
+} */
 
 /* ========== スマホ対応 ========== */
 @media (max-width: 768px) {

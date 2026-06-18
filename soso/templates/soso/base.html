@@ -20,16 +20,16 @@
             <li><a href="{% url 'soso:top_page' %}">ホーム</a></li>
             <li><a href="{% url 'soso:shopping_cart' %}">カート</a></li>
             <li><a href="{% url 'soso:review_timeline' %}">レビュー</a></li>
-            {% if user_info %}
+            {% if request.session.user_id %}
                 <li><a href="{% url 'soso:user_info' %}">マイページ</a></li>
                 <li><a href="{% url 'soso:user_logout' %}">ログアウト</a></li>
             {% else %}
                 <li><a href="{% url 'soso:user_login' %}">ログイン</a></li>
             {% endif %}
         </ul>
-        <div class="hamburger" id="hamburger">
+        <!-- <div class="hamburger" id="hamburger">
             <span></span><span></span><span></span>
-        </div>
+        </div> -->
     </nav>
 
     <!-- ===== 各ページ固有の中身 ===== -->
