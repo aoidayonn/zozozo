@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>ガチャ結果</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+</head>
+<body>
+    <div class="content" style="text-align: center;">
+        <h2>🎉 ガチャ結果 🎉</h2>
+
+        <div style="border: 3px solid gold; padding: 20px; margin: 20px; display: inline-block;">
+            <h1>{{ coupon.rarity }}</h1>
+            <h2>{{ coupon.discount_rate }}% OFF クーポン</h2>
+            <p>クーポンコード:</p>
+            <h3 style="background: #eee; padding: 10px;">{{ coupon.code }}</h3>
+            <p>有効期限: {{ coupon.expires_at|date:"Y/m/d H:i" }}</p>
+        </div>
+
+        <br>
+        <a href="{% url 'soso:my_coupons' %}">マイクーポン一覧へ</a> |
+        <a href="{% url 'soso:top_page' %}">トップに戻る</a>
+    </div>
+</body>
+</html>

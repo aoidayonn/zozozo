@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>クーポンガチャ</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+</head>
+<body>
+    <div class="content">
+        <h2>🎰 クーポンガチャ</h2>
+        <p>1日1回引けるよ！</p>
+
+        <h3>確率</h3>
+        <ul>
+            <li>💎ダイヤ（50%OFF）: 1%</li>
+            <li>🥇ゴールド（20%OFF）: 9%</li>
+            <li>🥈シルバー（10%OFF）: 30%</li>
+            <li>🥉ブロンズ（5%OFF）: 60%</li>
+        </ul>
+
+        {% if already_drawn %}
+            <p style="color:red;">今日はもう引きました。明日また挑戦してね！</p>
+        {% else %}
+            <form action="{% url 'soso:gacha_draw' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" style="font-size: 20px; padding: 10px 30px;">
+                    🎰 ガチャを引く！
+                </button>
+            </form>
+        {% endif %}
+
+        <br><br>
+        <a href="{% url 'soso:my_coupons' %}">マイクーポン一覧</a> |
+        <a href="{% url 'soso:top_page' %}">トップに戻る</a>
+    </div>
+</body>
+</html>

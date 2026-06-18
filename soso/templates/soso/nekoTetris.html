@@ -1,0 +1,541 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8" />
+    <title>🐱 ねこテトリス</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+    <style>
+        .tetris-wrapper {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        #tetris-canvas {
+            background: #fafafa;
+            border: 3px solid #111;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .tetris-sidebar {
+            min-width: 200px;
+        }
+
+        .sidebar-box {
+            background: #fff;
+            border: 2px solid #111;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-box h4 {
+            margin: 0 0 12px 0;
+            padding: 0;
+            border: none;
+            font-size: 1.4rem;
+            color: #111;
+        }
+
+        .sidebar-box .value {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #111;
+        }
+
+        #next-canvas {
+            background: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .controls-info {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .controls-info kbd {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-family: monospace;
+            font-weight: 700;
+            box-shadow: 0 1px 0 #ccc;
+        }
+
+        .game-over {
+            position: absolute;
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 24px 40px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 2.4rem;
+            display: none;
+        }
+
+        .game-over.show { display: block; }
+
+        .game-over button {
+            margin-top: 16px;
+            padding: 10px 28px;
+            background: #fff;
+            color: #111;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @media (max-width: 600px) {
+            .tetris-wrapper { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h3>🐱 ねこテトリス</h3>
+        <p>猫を消して高得点を目指せ！</p>
+
+        <div class="tetris-wrapper">
+            <!-- ゲーム画面 -->
+            <div class="canvas-wrapper">
+                <canvas id="tetris-canvas" width="300" height="600"></canvas>
+                <div id="game-over" class="game-over">
+                    <div>GAME OVER 😿</div>
+                    <button onclick="restartGame()">もう一度</button>
+                </div>
+            </div>
+
+            <!-- サイドバー -->
+            <div class="tetris-sidebar">
+                <div class="sidebar-box">
+                    <h4>SCORE</h4>
+                    <div class="value" id="score">0</div>
+                </div>
+                <div class="sidebar-box">
+                    <h4>LINES</h4>
+                    <div class="value" id="lines">0</div>
+                </div>
+                <div class="sidebar-box">
+                    <h4>NEXT</h4>
+                    <canvas id="next-canvas" width="120" height="120"></canvas>
+                </div>
+                <!-- ★ HOLD ボックス追加 -->
+                <div class="sidebar-box">
+                    <h4>HOLD</h4>
+                    <canvas id="hold-canvas" width="120" height="120"></canvas>
+                </div>
+                <div class="controls-info">
+                    <strong>操作方法</strong><br>
+                    <kbd>←</kbd> <kbd>→</kbd> 移動<br>
+                    <kbd>↓</kbd> 加速落下<br>
+                    <kbd>↑</kbd> 回転<br>
+                    <kbd>Space</kbd> 一気に落とす<br>
+                    <kbd>C</kbd> ホールド<br>
+                    <kbd>P</kbd> 一時停止
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <a href="{% url 'soso:top_page' %}">← トップに戻る</a>
+    </div>
+
+    <script>
+        (function() {
+            var COLS = 10;
+            var ROWS = 20;
+            var BLOCK_SIZE = 30;
+            var CAT_EMOJIS = ["🐱", "😼", "🙀", "😺", "😸", "😻", "😹"];
+        
+            var canvas = document.getElementById("tetris-canvas");
+            var ctx = canvas.getContext("2d");
+            var nextCanvas = document.getElementById("next-canvas");
+            var nextCtx = nextCanvas.getContext("2d");
+            var holdCanvas = document.getElementById("hold-canvas");
+            var holdCtx = holdCanvas.getContext("2d");
+        
+            var SHAPES = [
+                { shape: [[1,1,1,1]], color: "#FFB7C5" },
+                { shape: [[1,1],[1,1]], color: "#FFD966" },
+                { shape: [[0,1,0],[1,1,1]], color: "#B4A7D6" },
+                { shape: [[0,1,1],[1,1,0]], color: "#A8D8B9" },
+                { shape: [[1,1,0],[0,1,1]], color: "#F4A6A6" },
+                { shape: [[1,0],[1,0],[1,1]], color: "#F9B572" },
+                { shape: [[0,1],[0,1],[1,1]], color: "#9BCDD2" }
+            ];
+        
+            var board = [];
+            var currentPiece = null;
+            var nextPiece = null;
+            var holdPiece = null;
+            var holdUsed = false;     /* ★ 1ターン1回だけホールド可 */
+            var score = 0;
+            var lines = 0;
+            var dropCounter = 0;
+            var dropInterval = 800;
+            var softDropping = false; /* ★ ↓キー押下中フラグ */
+            var lastTime = 0;
+            var gameOver = false;
+            var paused = false;
+            var animId = null;
+        
+            function initBoard() {
+                board = [];
+                for (var r = 0; r < ROWS; r++) {
+                    var row = [];
+                    for (var c = 0; c < COLS; c++) row.push(null);
+                    board.push(row);
+                }
+            }
+        
+            function randomPiece() {
+                var idx = Math.floor(Math.random() * SHAPES.length);
+                var template = SHAPES[idx];
+                var emoji = CAT_EMOJIS[Math.floor(Math.random() * CAT_EMOJIS.length)];
+                var shape = template.shape.map(function(row) { return row.slice(); });
+                return {
+                    shape: shape,
+                    color: template.color,
+                    emoji: emoji,
+                    x: Math.floor((COLS - shape[0].length) / 2),
+                    y: 0
+                };
+            }
+        
+            function collide(piece, dx, dy, newShape) {
+                var shape = newShape || piece.shape;
+                for (var r = 0; r < shape.length; r++) {
+                    for (var c = 0; c < shape[r].length; c++) {
+                        if (!shape[r][c]) continue;
+                        var nx = piece.x + c + dx;
+                        var ny = piece.y + r + dy;
+                        if (nx < 0 || nx >= COLS || ny >= ROWS) return true;
+                        if (ny >= 0 && board[ny][nx]) return true;
+                    }
+                }
+                return false;
+            }
+        
+            function mergePiece() {
+                for (var r = 0; r < currentPiece.shape.length; r++) {
+                    for (var c = 0; c < currentPiece.shape[r].length; c++) {
+                        if (currentPiece.shape[r][c]) {
+                            var x = currentPiece.x + c;
+                            var y = currentPiece.y + r;
+                            if (y >= 0) {
+                                board[y][x] = {
+                                    color: currentPiece.color,
+                                    emoji: currentPiece.emoji
+                                };
+                            }
+                        }
+                    }
+                }
+            }
+        
+            function clearLines() {
+                var cleared = 0;
+                for (var r = ROWS - 1; r >= 0; r--) {
+                    var full = true;
+                    for (var c = 0; c < COLS; c++) {
+                        if (!board[r][c]) { full = false; break; }
+                    }
+                    if (full) {
+                        board.splice(r, 1);
+                        var newRow = [];
+                        for (var i = 0; i < COLS; i++) newRow.push(null);
+                        board.unshift(newRow);
+                        cleared++;
+                        r++;
+                    }
+                }
+                if (cleared > 0) {
+                    var points = [0, 100, 300, 500, 800][cleared];
+                    score += points;
+                    lines += cleared;
+                    document.getElementById("score").textContent = score;
+                    document.getElementById("lines").textContent = lines;
+                    dropInterval = Math.max(100, 800 - Math.floor(lines / 5) * 60);
+                }
+            }
+        
+            function rotate(piece) {
+                var shape = piece.shape;
+                var rows = shape.length;
+                var cols = shape[0].length;
+                var rotated = [];
+                for (var c = 0; c < cols; c++) {
+                    var newRow = [];
+                    for (var r = rows - 1; r >= 0; r--) {
+                        newRow.push(shape[r][c]);
+                    }
+                    rotated.push(newRow);
+                }
+                if (!collide(piece, 0, 0, rotated)) {
+                    piece.shape = rotated;
+                }
+            }
+        
+            function spawnNext() {
+                currentPiece = nextPiece;
+                nextPiece = randomPiece();
+                holdUsed = false;  /* ★ 新ピースが出たらホールド解禁 */
+                if (collide(currentPiece, 0, 0)) {
+                    gameOver = true;
+                    document.getElementById("game-over").classList.add("show");
+                }
+            }
+        
+            function drop() {
+                if (!collide(currentPiece, 0, 1)) {
+                    currentPiece.y++;
+                } else {
+                    mergePiece();
+                    clearLines();
+                    spawnNext();
+                }
+                dropCounter = 0;
+            }
+        
+            function hardDrop() {
+                var dropDist = 0;
+                while (!collide(currentPiece, 0, 1)) {
+                    currentPiece.y++;
+                    dropDist++;
+                }
+                score += dropDist * 2;
+                document.getElementById("score").textContent = score;
+                drop();
+            }
+        
+            /* ★ ホールド機能 */
+            function holdCurrent() {
+                if (holdUsed) return;
+                holdUsed = true;
+        
+                if (holdPiece === null) {
+                    /* 初めてのホールド：現在のピースを保管→nextを出す */
+                    holdPiece = {
+                        shape: currentPiece.shape.map(function(row) { return row.slice(); }),
+                        color: currentPiece.color,
+                        emoji: currentPiece.emoji
+                    };
+                    currentPiece = nextPiece;
+                    nextPiece = randomPiece();
+                } else {
+                    /* 入れ替え：現在のピースとホールドを交換 */
+                    var swap = {
+                        shape: holdPiece.shape,
+                        color: holdPiece.color,
+                        emoji: holdPiece.emoji,
+                        x: Math.floor((COLS - holdPiece.shape[0].length) / 2),
+                        y: 0
+                    };
+                    holdPiece = {
+                        shape: currentPiece.shape.map(function(row) { return row.slice(); }),
+                        color: currentPiece.color,
+                        emoji: currentPiece.emoji
+                    };
+                    currentPiece = swap;
+                }
+            }
+        
+            function drawBlock(c, x, y, emoji) {
+                ctx.fillStyle = c.color;
+                ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                ctx.strokeStyle = "rgba(0,0,0,0.2)";
+                ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                ctx.font = "20px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillStyle = "#000";
+                ctx.fillText(emoji, x * BLOCK_SIZE + BLOCK_SIZE/2, y * BLOCK_SIZE + BLOCK_SIZE/2);
+            }
+        
+            function draw() {
+                ctx.fillStyle = "#fafafa";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+                ctx.strokeStyle = "#e8e8e8";
+                ctx.lineWidth = 1;
+                for (var i = 0; i <= COLS; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * BLOCK_SIZE, 0);
+                    ctx.lineTo(i * BLOCK_SIZE, canvas.height);
+                    ctx.stroke();
+                }
+                for (var j = 0; j <= ROWS; j++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, j * BLOCK_SIZE);
+                    ctx.lineTo(canvas.width, j * BLOCK_SIZE);
+                    ctx.stroke();
+                }
+        
+                for (var r = 0; r < ROWS; r++) {
+                    for (var c = 0; c < COLS; c++) {
+                        if (board[r][c]) {
+                            drawBlock(board[r][c], c, r, board[r][c].emoji);
+                        }
+                    }
+                }
+        
+                if (currentPiece) {
+                    for (var pr = 0; pr < currentPiece.shape.length; pr++) {
+                        for (var pc = 0; pc < currentPiece.shape[pr].length; pc++) {
+                            if (currentPiece.shape[pr][pc]) {
+                                drawBlock(
+                                    { color: currentPiece.color },
+                                    currentPiece.x + pc,
+                                    currentPiece.y + pr,
+                                    currentPiece.emoji
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        
+            /* ★ 共通描画関数（NEXT / HOLD用） */
+            function drawPreview(targetCtx, targetCanvas, piece, faded) {
+                targetCtx.fillStyle = "#fafafa";
+                targetCtx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+                if (!piece) return;
+        
+                var size = 24;
+                var offsetX = (targetCanvas.width - piece.shape[0].length * size) / 2;
+                var offsetY = (targetCanvas.height - piece.shape.length * size) / 2;
+        
+                targetCtx.globalAlpha = faded ? 0.4 : 1;
+        
+                for (var r = 0; r < piece.shape.length; r++) {
+                    for (var c = 0; c < piece.shape[r].length; c++) {
+                        if (piece.shape[r][c]) {
+                            targetCtx.fillStyle = piece.color;
+                            targetCtx.fillRect(offsetX + c * size, offsetY + r * size, size, size);
+                            targetCtx.strokeStyle = "rgba(0,0,0,0.2)";
+                            targetCtx.strokeRect(offsetX + c * size, offsetY + r * size, size, size);
+                            targetCtx.font = "16px sans-serif";
+                            targetCtx.textAlign = "center";
+                            targetCtx.textBaseline = "middle";
+                            targetCtx.fillStyle = "#000";
+                            targetCtx.fillText(
+                                piece.emoji,
+                                offsetX + c * size + size/2,
+                                offsetY + r * size + size/2
+                            );
+                        }
+                    }
+                }
+                targetCtx.globalAlpha = 1;
+            }
+        
+            function update(time) {
+                if (gameOver) return;
+                if (paused) {
+                    animId = requestAnimationFrame(update);
+                    return;
+                }
+        
+                var dt = time - lastTime;
+                lastTime = time;
+                dropCounter += dt;
+        
+                /* ★ ↓キー押下中は落下間隔を短く */
+                var interval = softDropping ? 50 : dropInterval;
+                if (dropCounter > interval) {
+                    drop();
+                }
+        
+                draw();
+                drawPreview(nextCtx, nextCanvas, nextPiece, false);
+                drawPreview(holdCtx, holdCanvas, holdPiece, holdUsed);  /* 使用済みは薄く */
+                animId = requestAnimationFrame(update);
+            }
+        
+            document.addEventListener("keydown", function(e) {
+                if (gameOver) return;
+        
+                if (e.key === "p" || e.key === "P") {
+                    paused = !paused;
+                    return;
+                }
+        
+                if (paused) return;
+        
+                if (e.key === "ArrowLeft") {
+                    if (!collide(currentPiece, -1, 0)) currentPiece.x--;
+                    e.preventDefault();
+                } else if (e.key === "ArrowRight") {
+                    if (!collide(currentPiece, 1, 0)) currentPiece.x++;
+                    e.preventDefault();
+                } else if (e.key === "ArrowDown") {
+                    /* ★ 押しっぱなしで加速。スコア加算は廃止 */
+                    softDropping = true;
+                    e.preventDefault();
+                } else if (e.key === "ArrowUp") {
+                    rotate(currentPiece);
+                    e.preventDefault();
+                } else if (e.key === " ") {
+                    hardDrop();
+                    e.preventDefault();
+                } else if (e.key === "c" || e.key === "C") {
+                    holdCurrent();
+                    e.preventDefault();
+                }
+            });
+        
+            /* ★ ↓キーを離したら通常速度に戻す */
+            document.addEventListener("keyup", function(e) {
+                if (e.key === "ArrowDown") {
+                    softDropping = false;
+                }
+            });
+        
+            window.restartGame = function() {
+                initBoard();
+                score = 0;
+                lines = 0;
+                dropInterval = 800;
+                gameOver = false;
+                paused = false;
+                holdPiece = null;
+                holdUsed = false;
+                softDropping = false;
+                currentPiece = randomPiece();
+                nextPiece = randomPiece();
+                document.getElementById("score").textContent = 0;
+                document.getElementById("lines").textContent = 0;
+                document.getElementById("game-over").classList.remove("show");
+                lastTime = 0;
+                dropCounter = 0;
+                if (animId) cancelAnimationFrame(animId);
+                animId = requestAnimationFrame(update);
+            };
+        
+            initBoard();
+            currentPiece = randomPiece();
+            nextPiece = randomPiece();
+            animId = requestAnimationFrame(update);
+        })();
+        </script>
+</body>
+</html>

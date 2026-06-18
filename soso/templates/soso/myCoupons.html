@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>マイクーポン</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+</head>
+<body>
+    <div class="content">
+        <h2>🎫 マイクーポン</h2>
+
+        {% if coupons %}
+            <table border="1" cellpadding="10">
+                <tr>
+                    <th>レア度</th>
+                    <th>割引率</th>
+                    <th>クーポンコード</th>
+                    <th>有効期限</th>
+                    <th>状態</th>
+                </tr>
+                {% for c in coupons %}
+                <tr>
+                    <td>{{ c.rarity }}</td>
+                    <td>{{ c.discount_rate }}% OFF</td>
+                    <td><strong>{{ c.code }}</strong></td>
+                    <td>{{ c.expires_at|date:"Y/m/d H:i" }}</td>
+                    <td>
+                        {% if c.used %}
+                            <span style="color:gray;">使用済み</span>
+                        {% elif c.expires_at < now %}
+                            <span style="color:red;">期限切れ</span>
+                        {% else %}
+                            <span style="color:green;">使用可能</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% else %}
+            <p>まだクーポンを持っていません。ガチャを引いてみよう！</p>
+        {% endif %}
+
+        <br>
+        <a href="{% url 'soso:gacha_page' %}">ガチャを引く</a> |
+        <a href="{% url 'soso:top_page' %}">トップに戻る</a>
+    </div>
+</body>
+</html>

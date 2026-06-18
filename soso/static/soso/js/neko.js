@@ -11,6 +11,7 @@
     { emoji: "\uD83D\uDC36", name: "ぽち" },
     { emoji: "\uD83D\uDC15", name: "らっきー" },
     { emoji: "\uD83D\uDC29", name: "こたろう" },
+    { emoji: "\uD83D\uDC29", name: "ここあ" },
   ];
 
   
@@ -22,7 +23,8 @@
     { label: "\uD83D\uDE3B 会員情報を確認！",   url: "/soso/userInfo/" },
     { label: "\uD83D\uDC36 会員情報を変更！",   url: "/soso/updateUser/" },
     { label: "\uD83D\uDC15 ログアウトにゃ",     url: "/soso/logout/" },
-    { label: "\uD83D\uDC29 管理者ログイン！",   url: "/soso/adminLogin/" }
+    { label: "\uD83D\uDC29 管理者ログイン！",   url: "/soso/adminLogin/" },
+    { label: "\uD83D\uDC29 管理者ログイン！",   url: "/soso/tetris/" },
   ];
 
 
