@@ -49,4 +49,8 @@ urlpatterns = [
     path("reviews/", views.ReviewTimeline.as_view(), name="review_timeline"),
     
     path("tetris/", views.NekoTetris.as_view(), name="neko_tetris"),
+    path("gacha/", views.GachaPage.as_view(), name="gacha_page"),
+    path("gachaDraw/", views.GachaDraw.as_view(), name="gacha_draw"),
+    path("myCoupons/", views.MyCoupons.as_view(), name="my_coupons"),
 ]
+

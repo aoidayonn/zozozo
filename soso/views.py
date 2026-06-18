@@ -918,3 +918,98 @@ class ReviewTimeline(View):
 class NekoTetris(View):
     def get(self, request):
         return render(request, "soso/nekoTetris.html")
+
+import random
+import string
+from datetime import timedelta
+from django.utils import timezone
+from soso.models import ShoppingCoupon, GachaHistory
+
+
+# ──────────────────────────────────────
+# ガチャページ表示
+# ──────────────────────────────────────
+class GachaPage(View):
+    def get(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        # 今日もう引いたかチェック
+        today = timezone.now().date()
+        already_drawn = GachaHistory.objects.filter(
+            user=user, drawn_at__date=today
+        ).exists()
+
+        return render(request, "soso/gacha.html", {
+            "user_info": user,
+            "already_drawn": already_drawn,
+        })
+
+
+# ──────────────────────────────────────
+# ガチャを引く処理
+# ──────────────────────────────────────
+class GachaDraw(View):
+    def post(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        # 今日もう引いたかチェック
+        today = timezone.now().date()
+        if GachaHistory.objects.filter(user=user, drawn_at__date=today).exists():
+            return redirect("soso:gacha_page")
+
+        # 抽選（0〜99の乱数）
+        roll = random.randint(0, 99)
+        if roll < 1:
+            rarity, discount = "💎ダイヤ", 50
+        elif roll < 10:
+            rarity, discount = "🥇ゴールド", 20
+        elif roll < 40:
+            rarity, discount = "🥈シルバー", 10
+        else:
+            rarity, discount = "🥉ブロンズ", 5
+
+        # クーポンコード生成（ランダム8文字）
+        code = "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
+
+        # 有効期限は7日後
+        expires_at = timezone.now() + timedelta(days=7)
+
+        # クーポン作成
+        coupon = ShoppingCoupon.objects.create(
+            user=user,
+            code=code,
+            discount_rate=discount,
+            rarity=rarity,
+            expires_at=expires_at,
+        )
+
+        # ガチャ履歴を記録
+        GachaHistory.objects.create(user=user)
+
+        return render(request, "soso/gachaResult.html", {
+            "user_info": user,
+            "coupon": coupon,
+        })
+
+
+# ──────────────────────────────────────
+# マイクーポン一覧
+# ──────────────────────────────────────
+class MyCoupons(View):
+    def get(self, request):
+        user = get_login_user(request)
+        if not user:
+            return redirect("soso:user_login")
+
+        now = timezone.now()
+        coupons = ShoppingCoupon.objects.filter(user=user).order_by("-created_at")
+
+        return render(request, "soso/myCoupons.html", {
+            "user_info": user,
+            "coupons": coupons,
+            "now": now,
+        })
