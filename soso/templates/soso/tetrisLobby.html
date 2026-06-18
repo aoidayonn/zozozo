@@ -5,11 +5,34 @@
     <meta charset="UTF-8" />
     <title>🎮 ねこテトリス対戦ロビー</title>
     <link rel="stylesheet" type="text/css" href="{% static 'soso/css/zozo.css' %}" />
+    <style>
+        .diff-btn {
+            padding: 8px 16px;
+            margin: 0 4px;
+            border-radius: 980px;
+            border: 2px solid #ddd;
+            background: #fff;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .diff-btn:hover {
+            border-color: #111;
+            transform: translateY(-2px);
+        }
+        .diff-btn.active {
+            background: #111;
+            color: #fff;
+            border-color: #111;
+        }
+    </style>
 </head>
 <body>
     <div class="content">
         <h3>🎮 ねこテトリス対戦</h3>
         <p>合言葉を決めて、友達と同じ合言葉で入室すれば対戦できます！</p>
+        <p style="color:#888; font-size:1.2rem;">⚠️ 友達と同じ難易度を選んでね！</p>
 
         <div class="form">
             <table>
@@ -17,6 +40,17 @@
                     <th>合言葉:</th>
                     <td>
                         <input type="text" id="room-input" placeholder="例: neko123" maxlength="20">
+                    </td>
+                </tr>
+                <tr>
+                    <th>難易度:</th>
+                    <td>
+                        <div style="margin-top:8px;">
+                            <button class="diff-btn" data-diff="easy" type="button">🌱 EASY</button>
+                            <button class="diff-btn active" data-diff="normal" type="button">😺 NORMAL</button>
+                            <button class="diff-btn" data-diff="hard" type="button">🔥 HARD</button>
+                            <button class="diff-btn" data-diff="extreme" type="button">💀 EXTREME</button>
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -28,18 +62,29 @@
     </div>
 
     <script>
+        var selectedDiff = "normal";
+
+        /* 難易度ボタン切替 */
+        var diffBtns = document.querySelectorAll(".diff-btn");
+        diffBtns.forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                diffBtns.forEach(function(b) { b.classList.remove("active"); });
+                this.classList.add("active");
+                selectedDiff = this.getAttribute("data-diff");
+            });
+        });
+
         function enterRoom() {
             var roomName = document.getElementById("room-input").value.trim();
             if (!roomName) {
                 alert("合言葉を入力してください");
                 return;
             }
-            // 英数字のみに制限
             if (!/^[a-zA-Z0-9_]+$/.test(roomName)) {
                 alert("合言葉は英数字とアンダースコアのみ使えます");
                 return;
             }
-            window.location.href = "/soso/vs/" + roomName + "/";
+            window.location.href = "/soso/vs/" + roomName + "/?diff=" + selectedDiff;
         }
 
         document.getElementById("room-input").addEventListener("keypress", function(e) {

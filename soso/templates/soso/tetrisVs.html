@@ -14,9 +14,7 @@
             flex-wrap: wrap;
         }
 
-        .player-area {
-            text-align: center;
-        }
+        .player-area { text-align: center; }
 
         .player-label {
             font-size: 1.6rem;
@@ -45,7 +43,6 @@
             margin: 20px auto;
             display: inline-block;
         }
-
         .vs-status.waiting { background: #888; }
         .vs-status.playing { background: #27ae60; }
         .vs-status.win { background: #f5a623; }
@@ -56,7 +53,6 @@
             font-size: 1.4rem;
         }
 
-        /* ── サイドバー（自分用） ── */
         .my-area {
             display: flex;
             gap: 16px;
@@ -111,6 +107,24 @@
             font-size: 1rem;
         }
 
+        /* 難易度バッジ */
+        .canvas-wrap {
+            position: relative;
+            display: inline-block;
+        }
+        .game-mode-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 980px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            z-index: 10;
+        }
+
         @media (max-width: 800px) {
             .vs-wrapper { flex-direction: column; align-items: center; }
         }
@@ -119,7 +133,7 @@
 <body>
     <div class="content">
         <h3>🎮 ねこテトリス対戦</h3>
-        <p>合言葉: <strong>{{ room_name }}</strong></p>
+        <p>合言葉: <strong>{{ room_name }}</strong> / 難易度: <strong id="diff-display">😺 NORMAL</strong></p>
 
         <div id="status" class="vs-status waiting">相手を待っています...</div>
 
@@ -128,7 +142,10 @@
             <div class="player-area">
                 <div class="player-label">YOU 🐱</div>
                 <div class="my-area">
-                    <canvas id="my-canvas" class="game" width="240" height="480"></canvas>
+                    <div class="canvas-wrap">
+                        <canvas id="my-canvas" class="game" width="240" height="480"></canvas>
+                        <div id="mode-badge" class="game-mode-badge">😺 NORMAL</div>
+                    </div>
                     <div>
                         <div class="sidebar-box">
                             <h4>SCORE</h4>
@@ -185,6 +202,54 @@
     var holdCanvas = document.getElementById("hold-canvas");
     var holdCtx = holdCanvas.getContext("2d");
 
+    /* ★ 難易度設定 */
+    var DIFFICULTY = {
+        easy: {
+            label: "🌱 EASY",
+            initialInterval: 1400,
+            minInterval: 600,
+            speedUpEvery: 10,
+            speedUpAmount: 50,
+            softDropInterval: 100
+        },
+        normal: {
+            label: "😺 NORMAL",
+            initialInterval: 950,
+            minInterval: 200,
+            speedUpEvery: 6,
+            speedUpAmount: 50,
+            softDropInterval: 60
+        },
+        hard: {
+            label: "🔥 HARD",
+            initialInterval: 600,
+            minInterval: 100,
+            speedUpEvery: 4,
+            speedUpAmount: 60,
+            softDropInterval: 40
+        },
+        extreme: {
+            label: "💀 EXTREME",
+            initialInterval: 350,
+            minInterval: 50,
+            speedUpEvery: 3,
+            speedUpAmount: 70,
+            softDropInterval: 25
+        }
+    };
+
+    /* URLパラメータから難易度を取得 */
+    function getQueryParam(name) {
+        var params = new URLSearchParams(window.location.search);
+        return params.get(name);
+    }
+    var currentDifficulty = getQueryParam("diff") || "normal";
+    if (!DIFFICULTY[currentDifficulty]) currentDifficulty = "normal";
+    var diffConfig = DIFFICULTY[currentDifficulty];
+
+    document.getElementById("diff-display").textContent = diffConfig.label;
+    document.getElementById("mode-badge").textContent = diffConfig.label;
+
     var SHAPES = [
         { shape: [[1,1,1,1]], color: "#FFB7C5" },
         { shape: [[1,1],[1,1]], color: "#FFD966" },
@@ -206,7 +271,7 @@
     var oppScore = 0;
     var oppLines = 0;
     var dropCounter = 0;
-    var dropInterval = 800;
+    var dropInterval = diffConfig.initialInterval;
     var softDropping = false;
     var lastTime = 0;
     var gameStarted = false;
@@ -215,7 +280,7 @@
     var imLost = false;
     var oppLost = false;
 
-    /* ── WebSocket接続 ── */
+    /* WebSocket */
     var roomName = "{{ room_name }}";
     var wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
     var ws = new WebSocket(wsProtocol + "://" + window.location.host + "/ws/tetris/" + roomName + "/");
@@ -246,7 +311,6 @@
                 setStatus("🎉 勝利！", "win");
                 gameOver = true;
 
-                /* サーバーにポイント加算リクエスト */
                 fetch("/soso/tetris/win/", {
                     method: "POST",
                     headers: {
@@ -351,7 +415,12 @@
             lines += cleared;
             document.getElementById("my-score").textContent = score;
             document.getElementById("my-lines").textContent = lines;
-            dropInterval = Math.max(100, 800 - Math.floor(lines/5) * 60);
+
+            /* 難易度別の速度UP */
+            dropInterval = Math.max(
+                diffConfig.minInterval,
+                diffConfig.initialInterval - Math.floor(lines / diffConfig.speedUpEvery) * diffConfig.speedUpAmount
+            );
         }
     }
 
@@ -403,7 +472,6 @@
         drop();
     }
 
-    /* ── ホールド ── */
     function holdCurrent() {
         if (holdUsed) return;
         holdUsed = true;
@@ -433,7 +501,6 @@
         }
     }
 
-    /* ── 描画 ── */
     function drawCell(ctx, color, x, y, emoji) {
         ctx.fillStyle = color;
         ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
@@ -481,7 +548,6 @@
         }
     }
 
-    /* ── NEXT / HOLD プレビュー ── */
     function drawPreview(targetCtx, targetCanvas, piece, faded) {
         targetCtx.fillStyle = "#fafafa";
         targetCtx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
@@ -515,7 +581,6 @@
         targetCtx.globalAlpha = 1;
     }
 
-    /* ── 盤面送信（間引き） ── */
     var lastSendTime = 0;
     function sendBoardState() {
         var now = Date.now();
@@ -530,7 +595,6 @@
         }));
     }
 
-    /* ── キー操作 ── */
     document.addEventListener("keydown", function(e) {
         if (!gameStarted || gameOver) return;
 
@@ -565,7 +629,6 @@
         if (e.key === "ArrowDown") softDropping = false;
     });
 
-    /* ── メインループ ── */
     function update(time) {
         if (gameOver) {
             drawBoard(myCtx, myCanvas, board, currentPiece);
@@ -581,7 +644,8 @@
         lastTime = time;
         dropCounter += dt;
 
-        var interval = softDropping ? 50 : dropInterval;
+        /* 難易度別のソフトドロップ間隔 */
+        var interval = softDropping ? diffConfig.softDropInterval : dropInterval;
         if (dropCounter > interval) drop();
 
         drawBoard(myCtx, myCanvas, board, currentPiece);
@@ -600,7 +664,7 @@
         holdUsed = false;
         score = 0;
         lines = 0;
-        dropInterval = 800;
+        dropInterval = diffConfig.initialInterval;
         gameStarted = true;
         gameOver = false;
         imLost = false;
@@ -612,14 +676,12 @@
         requestAnimationFrame(update);
     }
 
-    /* 初期描画 */
     initBoard();
     drawBoard(myCtx, myCanvas, board, null);
     drawBoard(oppCtx, oppCanvas, oppBoard, null);
     drawPreview(nextCtx, nextCanvas, null, false);
     drawPreview(holdCtx, holdCanvas, null, false);
 
-    /* CSRFトークン取得 */
     function getCookie(name) {
         var value = "; " + document.cookie;
         var parts = value.split("; " + name + "=");
@@ -627,7 +689,6 @@
         return "";
     }
 
-    /* 勝利モーダル */
     function showWinModal(points, wins) {
         var modal = document.createElement("div");
         modal.style.cssText =
