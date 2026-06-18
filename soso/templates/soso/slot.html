@@ -168,10 +168,121 @@
 
         .history-list .win { color: #27ae60; font-weight: 700; }
         .history-list .lose { color: #c0392b; }
+
+        /* ★ 確定演出オーバーレイ */
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 99998;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .confirm-overlay.active {
+            opacity: 1;
+        }
+
+        /* レベル1: 激熱（オレンジ点滅） */
+        .confirm-overlay.level-1 {
+            background: radial-gradient(circle, rgba(255,140,0,0.4) 0%, transparent 70%);
+            animation: flashOrange 0.8s ease infinite;
+        }
+        @keyframes flashOrange {
+            0%, 100% { background: radial-gradient(circle, rgba(255,140,0,0.3) 0%, transparent 70%); }
+            50% { background: radial-gradient(circle, rgba(255,140,0,0.7) 0%, rgba(255,100,0,0.3) 50%, transparent 80%); }
+        }
+
+        /* レベル2: 確定（虹色グルグル） */
+        .confirm-overlay.level-2 {
+            background: conic-gradient(
+                from 0deg,
+                #ff0080, #ff8c00, #ffd700, #00ff00,
+                #00bfff, #8a2be2, #ff0080
+            );
+            opacity: 0.5;
+            animation: rainbowSpin 1s linear infinite;
+        }
+        @keyframes rainbowSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* レベル3: ジャックポット（金色フラッシュ） */
+        .confirm-overlay.level-3 {
+            background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, rgba(255,140,0,0.5) 50%, transparent 80%);
+            animation: jackpotFlash 0.15s ease infinite;
+        }
+        @keyframes jackpotFlash {
+            0%, 100% {
+                background: radial-gradient(circle, rgba(255,215,0,0.9) 0%, rgba(255,140,0,0.5) 50%, transparent 80%);
+            }
+            50% {
+                background: radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,215,0,0.7) 50%, transparent 80%);
+            }
+        }
+
+        /* ★ 確定演出メッセージ */
+        .confirm-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6rem;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(0,0,0,0.8), 0 0 40px gold;
+            z-index: 99999;
+            opacity: 0;
+            pointer-events: none;
+            letter-spacing: 0.2em;
+            animation: messagePop 0.6s ease forwards;
+        }
+        .confirm-message.level-1 { color: #ff8c00; }
+        .confirm-message.level-2 { color: #fff; text-shadow: 0 0 20px #ff00ff, 0 0 40px #00bfff; }
+        .confirm-message.level-3 { color: gold; text-shadow: 0 0 30px gold, 0 0 60px #ff8c00; }
+
+        @keyframes messagePop {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.3); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* ★ リール枠が光る */
+        .reel.glowing {
+            animation: reelGlow 0.3s ease infinite;
+        }
+        @keyframes reelGlow {
+            0%, 100% {
+                border-color: gold;
+                box-shadow: inset 0 4px 8px rgba(0,0,0,0.2), 0 0 20px gold;
+            }
+            50% {
+                border-color: #fff;
+                box-shadow: inset 0 4px 8px rgba(0,0,0,0.2), 0 0 40px #fff, 0 0 60px gold;
+            }
+        }
+
+        /* ★ スロットマシン全体が震える */
+        .slot-machine.shaking {
+            animation: shake-machine 0.1s ease infinite;
+        }
+        @keyframes shake-machine {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
     </style>
 </head>
 <body>
     <div class="content">
+        
+        <!-- ★ 確定演出オーバーレイ -->
+        <div id="confirm-overlay" class="confirm-overlay"></div>
+
+        <div class="content">
+
         <h2>🎰 ねこスロット</h2>
         <p>テトリスポイントを賭けて、大当たりを狙おう！</p>
 
@@ -250,9 +361,13 @@
     </div>
 
     <script>
-        var SYMBOLS = ["🐱", "🐈", "🐟", "🥛", "⭐", "💎"];
+var SYMBOLS = ["🐱", "🐈", "🐟", "🥛", "⭐", "💎"];
         var currentBet = 50;
         var spinning = false;
+
+        /* ★ タイマーを2種類に分ける */
+        var spinTimers = [];     // リール停止系（消されたら困る）
+        var effectTimers = [];   // 演出系（消してOK）
 
         /* ベットボタン切替 */
         var betBtns = document.querySelectorAll(".bet-btn");
@@ -265,7 +380,6 @@
             });
         });
 
-        /* CSRFトークン取得 */
         function getCookie(name) {
             var value = "; " + document.cookie;
             var parts = value.split("; " + name + "=");
@@ -283,12 +397,15 @@
                 return;
             }
 
+            /* ★ 前回のスピンタイマーが残ってたらクリア（安全のため） */
+            spinTimers.forEach(function(t) { clearTimeout(t); });
+            spinTimers = [];
+
             spinning = true;
             document.getElementById("spin-btn").disabled = true;
             document.getElementById("result").textContent = "🎰 SPINNING...";
             document.getElementById("result").className = "result-display";
 
-            /* リール回転アニメーション */
             var reels = [
                 document.getElementById("reel1"),
                 document.getElementById("reel2"),
@@ -297,14 +414,12 @@
 
             reels.forEach(function(r) { r.classList.add("spinning"); });
 
-            /* ランダム表示でリール感を出す */
             var spinIntervals = reels.map(function(reel) {
                 return setInterval(function() {
                     reel.textContent = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
                 }, 80);
             });
 
-            /* サーバーに結果を問い合わせ */
             var formData = new FormData();
             formData.append("bet", currentBet);
 
@@ -323,25 +438,31 @@
                     return;
                 }
 
-                /* リールを順番に停止 */
-                setTimeout(function() {
+                /* 確定演出開始 */
+                if (data.confirm_level > 0) {
+                    triggerConfirmEffect(data.confirm_level, reels);
+                }
+
+                /* リール停止タイマーは spinTimers に入れる */
+                var t1 = setTimeout(function() {
                     clearInterval(spinIntervals[0]);
                     reels[0].classList.remove("spinning");
                     reels[0].textContent = data.reels[0];
                 }, 800);
+                spinTimers.push(t1);
 
-                setTimeout(function() {
+                var t2 = setTimeout(function() {
                     clearInterval(spinIntervals[1]);
                     reels[1].classList.remove("spinning");
                     reels[1].textContent = data.reels[1];
                 }, 1400);
+                spinTimers.push(t2);
 
-                setTimeout(function() {
+                var t3 = setTimeout(function() {
                     clearInterval(spinIntervals[2]);
                     reels[2].classList.remove("spinning");
                     reels[2].textContent = data.reels[2];
 
-                    /* 結果表示 */
                     var resultEl = document.getElementById("result");
                     if (data.payout > 0) {
                         resultEl.textContent = data.result + " +" + data.payout + "pt!";
@@ -351,12 +472,18 @@
                         resultEl.className = "result-display lose";
                     }
 
-                    /* ポイント更新 */
                     document.getElementById("points").textContent = data.points;
+
+                    /* 演出停止タイマーは effectTimers に入れる */
+                    var stopTimer = setTimeout(function() {
+                        stopConfirmEffect();
+                    }, 1500);
+                    effectTimers.push(stopTimer);
 
                     spinning = false;
                     document.getElementById("spin-btn").disabled = false;
                 }, 2000);
+                spinTimers.push(t3);
             })
             .catch(function(err) {
                 alert("通信エラー: " + err);
@@ -371,6 +498,82 @@
             document.getElementById("spin-btn").disabled = false;
             document.getElementById("result").textContent = "スピンしてね！";
             document.getElementById("result").className = "result-display";
+        }
+
+        /* 確定演出 */
+        function triggerConfirmEffect(level, reelEls) {
+            /* ★ 演出だけリセット（スピンタイマーには触らない！） */
+            cleanupConfirmEffect();
+
+            var overlay = document.getElementById("confirm-overlay");
+            var slotMachine = document.querySelector(".slot-machine");
+
+            overlay.className = "confirm-overlay";
+            void overlay.offsetWidth;
+
+            overlay.className = "confirm-overlay active level-" + level;
+            slotMachine.classList.remove("shaking");
+            void slotMachine.offsetWidth;
+            slotMachine.classList.add("shaking");
+
+            reelEls.forEach(function(r) {
+                r.classList.remove("glowing");
+                void r.offsetWidth;
+                r.classList.add("glowing");
+            });
+
+            var oldMsg = document.getElementById("confirm-msg");
+            if (oldMsg && oldMsg.parentNode) {
+                oldMsg.parentNode.removeChild(oldMsg);
+            }
+
+            var messages = {
+                1: "🔥 VERY HOT!! 🔥",
+                2: "✨ CORRECT!! ✨",
+                3: "💎 JACK POT!! 💎"
+            };
+
+            var msg = document.createElement("div");
+            msg.className = "confirm-message level-" + level;
+            msg.textContent = messages[level];
+            msg.id = "confirm-msg";
+            document.body.appendChild(msg);
+
+            var msgFadeTimer = setTimeout(function() {
+                if (msg.parentNode) {
+                    msg.style.transition = "opacity 0.5s";
+                    msg.style.opacity = "0";
+                    var msgRemoveTimer = setTimeout(function() {
+                        if (msg.parentNode) msg.parentNode.removeChild(msg);
+                    }, 500);
+                    effectTimers.push(msgRemoveTimer);
+                }
+            }, 1500);
+            effectTimers.push(msgFadeTimer);
+        }
+
+        /* ★ 演出のクリーンアップ（クラス・メッセージ削除＋演出タイマーのみクリア） */
+        function cleanupConfirmEffect() {
+            effectTimers.forEach(function(t) { clearTimeout(t); });
+            effectTimers = [];
+
+            var overlay = document.getElementById("confirm-overlay");
+            var slotMachine = document.querySelector(".slot-machine");
+            var reels = document.querySelectorAll(".reel");
+
+            overlay.className = "confirm-overlay";
+            slotMachine.classList.remove("shaking");
+            reels.forEach(function(r) { r.classList.remove("glowing"); });
+
+            var oldMsg = document.getElementById("confirm-msg");
+            if (oldMsg && oldMsg.parentNode) {
+                oldMsg.parentNode.removeChild(oldMsg);
+            }
+        }
+
+        /* 演出停止（外部から呼ばれる用、cleanupと同じ） */
+        function stopConfirmEffect() {
+            cleanupConfirmEffect();
         }
     </script>
 </body>

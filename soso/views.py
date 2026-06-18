@@ -1189,15 +1189,13 @@ class SlotPage(View):
 class SlotPlay(View):
     SYMBOLS = ["🐱", "🐈", "🐟", "🥛", "⭐", "💎"]
 
-    # 払い戻し倍率
     PAYOUTS = {
-        "💎💎💎": 50,    # ジャックポット
+        "💎💎💎": 50,
         "⭐⭐⭐": 20,
         "🐱🐱🐱": 10,
         "🐈🐈🐈": 8,
         "🐟🐟🐟": 5,
         "🥛🥛🥛": 3,
-        # ペア（2つ揃い）
         "pair_diamond": 5,
         "pair_star": 3,
         "pair_normal": 2,
@@ -1213,7 +1211,6 @@ class SlotPlay(View):
         except (TypeError, ValueError):
             bet = 10
 
-        # ベット額のバリデーション
         if bet not in [10, 50, 100]:
             return JsonResponse({"success": False, "error": "不正なベット額"}, status=400)
 
@@ -1222,23 +1219,22 @@ class SlotPlay(View):
         if tp.points < bet:
             return JsonResponse({"success": False, "error": "ポイント不足"}, status=400)
 
-        # ポイント消費
         tp.points -= bet
 
-        # 抽選（3つのリール）
-        reel1 = random.choice(self.SYMBOLS)
-        reel2 = random.choice(self.SYMBOLS)
-        reel3 = random.choice(self.SYMBOLS)
-        reels = [reel1, reel2, reel3]
+        reels = [
+            random.choice(self.SYMBOLS),
+            random.choice(self.SYMBOLS),
+            random.choice(self.SYMBOLS),
+        ]
 
-        # 判定
         payout, result = self._calculate_payout(reels, bet)
 
-        # ポイント加算
+        # ★ 確定演出の判定
+        confirm_level = self._get_confirm_level(reels, payout, bet)
+
         tp.points += payout
         tp.save()
 
-        # 履歴記録
         SlotHistory.objects.create(
             user=user,
             bet=bet,
@@ -1254,33 +1250,52 @@ class SlotPlay(View):
             "payout": payout,
             "profit": payout - bet,
             "points": tp.points,
+            "confirm_level": confirm_level,  # ★ 0:なし / 1:激熱 / 2:確定 / 3:ジャックポット
         })
 
     def _calculate_payout(self, reels, bet):
         r1, r2, r3 = reels
-
-        # 3つ揃い
         if r1 == r2 == r3:
             key = r1 * 3
             if key in self.PAYOUTS:
                 multiplier = self.PAYOUTS[key]
                 return bet * multiplier, "🎉 大当たり！x" + str(multiplier)
-
-        # ペア（2つ揃い）
         if r1 == r2 or r2 == r3 or r1 == r3:
-            # 揃ったシンボルを特定
             if r1 == r2:
                 paired = r1
             elif r2 == r3:
                 paired = r2
             else:
                 paired = r1
-
             if paired == "💎":
                 return bet * self.PAYOUTS["pair_diamond"], "✨ ダイヤペア！x5"
             elif paired == "⭐":
                 return bet * self.PAYOUTS["pair_star"], "⭐ スターペア！x3"
             else:
                 return bet * self.PAYOUTS["pair_normal"], "🎵 ペア！x2"
-
         return 0, "😿 ハズレ"
+
+    def _get_confirm_level(self, reels, payout, bet):
+        """確定演出のレベルを判定
+        0: なし
+        1: 激熱（高配当ペア以上）
+        2: 確定演出（3つ揃い）
+        3: ジャックポット（💎💎💎）
+        """
+        r1, r2, r3 = reels
+
+        # ジャックポット
+        if r1 == r2 == r3 == "💎":
+            return 3
+
+        # 3つ揃い
+        if r1 == r2 == r3:
+            return 2
+
+        # 高配当ペア（ダイヤ or スター）
+        if (r1 == r2 == "💎") or (r2 == r3 == "💎") or (r1 == r3 == "💎"):
+            return 1
+        if (r1 == r2 == "⭐") or (r2 == r3 == "⭐") or (r1 == r3 == "⭐"):
+            return 1
+
+        return 0
